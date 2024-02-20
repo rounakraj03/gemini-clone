@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 app.use(errorHandler);
 
 
-app.listen(port, () => {
+app.listen(port, "192.168.2.192",  () => {
     let date_ob = new Date();
 
     //current hours 
