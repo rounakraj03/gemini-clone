@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static Color bodyBgColor = const Color(0xff0f1011);
-  static Color cardBgColor = const Color(0xff17191a);
-  static Color textUnhighlightedColor = const Color(0xffbcb6ae);
-  static Color textHighlightedColor = const Color(0xffd6d3cd);
+  // static const Color scaffoldBgColor = Color.fromRGBO(115, 104, 242, 1);
+  static const Color scaffoldBgColor = Color.fromARGB(255, 80, 70, 188);
+  static const Color greyBgColor = Color(0xffb7b7b7);
+  static const Color greyTextColor = Color(0xffbcbdbd);
+  static const Color desertStorm = Color(0xFFF8F8F8);
 }

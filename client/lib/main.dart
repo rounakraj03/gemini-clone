@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:client/network/chat_repository/chat_repository.dart';
 import 'package:client/network/models/chat_model.dart';
 import 'package:client/network/models/new_chat_request.dart';
+import 'package:client/presentation/chat_page/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      // home: const MyHomePage(),
+      home: const ChatScreen(),
     );
   }
 }
