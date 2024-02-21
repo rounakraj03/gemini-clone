@@ -69,18 +69,16 @@ class BackCardOnTopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.scaffoldBgColor,
+      padding: EdgeInsets.only(top: onTopUiSpace),
       child: Stack(
         children: [
           Column(
             children: [
-              SizedBox(
-                height: onTopUiSpace,
-              ),
               Expanded(child: _card(null)),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.fromLTRB(15.0, 35.0, 15.0, 10.0),
             child: child,
           ),
         ],
