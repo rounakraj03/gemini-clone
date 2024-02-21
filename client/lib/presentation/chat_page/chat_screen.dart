@@ -15,6 +15,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   late ScrollController _scrollController;
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Add a GlobalKey
 
   List<ChatModel> chatModelList = [
     ChatModel(role: 'user', parts: "Hi"),
@@ -70,70 +72,173 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
-            customAppBarAttribute: CustomAppBarAttribute(title: "Gemini")),
-        body: BackCardOnTopView(
-          child: Column(
-            children: [
-              Expanded(
-                  child: ListView.separated(
-                controller: _scrollController,
-                itemBuilder: (context, index) =>
-                    _chatBubble(chatModelList[index]),
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 20),
-                itemCount: chatModelList.length,
-              )),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: textController,
-                      maxLines: 6,
-                      minLines: 1,
-                      cursorColor: AppColors.scaffoldBgColor,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 12),
-                          hintText: "Ask Anything...",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        if (textController.text.isNotEmpty) {
-                          setState(() {
-                            scrollToBottom();
-                            chatModelList.add(ChatModel(
-                                role: 'user', parts: textController.text));
-                            textController.clear();
-                            FocusScope.of(context).unfocus();
-                            getChatResponse(messages: chatModelList);
-                          });
-                        }
-                      },
-                      icon: Container(
-                        decoration: BoxDecoration(
-                            color: AppColors.scaffoldBgColor,
-                            borderRadius: BorderRadius.circular(30)),
-                        height: 50,
-                        width: 50,
-                        child: const Icon(
-                          Icons.send,
-                          color: AppColors.desertStorm,
-                        ),
-                      )),
-                ],
+        key: _scaffoldKey,
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: AppColors.scaffoldBgColor,
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: Image.asset(Assets.benLogo),
+                          ),
+                          SizedBox(
+                            height: 80,
+                            width: 80,
+                            child: IconButton(
+                              icon: const Icon(
+                                size: 30,
+                                Icons.power_settings_new_outlined,
+                                color: AppColors.desertStorm,
+                              ),
+                              onPressed: () {
+                                print("LogOut");
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const Text(
+                        "9315045029",
+                        style: TextStyle(
+                            color: AppColors.desertStorm, fontSize: 18),
+                      )
+                    ]),
               ),
-              const SizedBox(
-                height: 0,
-              )
+              ListTile(
+                title: const Text('History 1'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('History2 '),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
             ],
           ),
+        ),
+        body: Column(
+          children: [
+            CustomAppBar(
+                customAppBarAttribute: CustomAppBarAttribute(
+                    title: "Gemini",
+                    image: Assets.bardLogo,
+                    appBarSideWidgets: AppBarSideWidgets(
+                      leading: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          // child: IconButton(
+                          //   icon: const Icon(
+                          //     Icons.arrow_back_ios,
+                          //     color: AppColors.desertStorm,
+                          //   ),
+                          //   onPressed: () {
+                          //     print("Back");
+                          //   },
+                          // ),
+                          child: Image.asset(Assets.chatGPTLogo),
+                        ),
+                      ),
+                      trailing: SizedBox(
+                        width: 80,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.menu_rounded,
+                            size: 35,
+                            color: AppColors.desertStorm,
+                          ),
+                          onPressed: () {
+                            print("Drawer");
+                            _scaffoldKey.currentState?.openDrawer();
+                          },
+                        ),
+                      ),
+                    ))),
+            Expanded(
+              child: BackCardOnTopView(
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: ListView.separated(
+                      controller: _scrollController,
+                      itemBuilder: (context, index) =>
+                          _chatBubble(chatModelList[index]),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 20),
+                      itemCount: chatModelList.length,
+                    )),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: textController,
+                            maxLines: 6,
+                            minLines: 1,
+                            cursorColor: AppColors.scaffoldBgColor,
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 12),
+                                hintText: "Ask Anything...",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20))),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              if (textController.text.isNotEmpty) {
+                                setState(() {
+                                  scrollToBottom();
+                                  chatModelList.add(ChatModel(
+                                      role: 'user',
+                                      parts: textController.text));
+                                  textController.clear();
+                                  FocusScope.of(context).unfocus();
+                                  getChatResponse(messages: chatModelList);
+                                });
+                              }
+                            },
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                  color: AppColors.scaffoldBgColor,
+                                  borderRadius: BorderRadius.circular(30)),
+                              height: 50,
+                              width: 50,
+                              child: const Icon(
+                                Icons.send,
+                                color: AppColors.desertStorm,
+                              ),
+                            )),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 0,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         ));
   }
 

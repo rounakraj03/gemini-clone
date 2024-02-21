@@ -1,9 +1,60 @@
 import 'package:client/res/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatelessWidget {
+  final CustomAppBarAttribute customAppBarAttribute;
+  const CustomAppBar({required this.customAppBarAttribute, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.scaffoldBgColor,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                customAppBarAttribute.appBarSideWidgets.leading,
+                const Spacer(),
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: AppColors.desertStorm,
+                          borderRadius: BorderRadius.circular(100)),
+                      height: 60,
+                      width: 60,
+                      child: Image.asset(
+                        customAppBarAttribute.image,
+                        color: AppColors.scaffoldBgColor,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Text(
+                      customAppBarAttribute.title,
+                      style: const TextStyle(
+                          color: AppColors.desertStorm,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+                const Spacer(),
+                customAppBarAttribute.appBarSideWidgets.trailing
+              ]),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomSimpleAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final CustomAppBarAttribute? customAppBarAttribute;
-  const CustomAppBar({this.customAppBarAttribute, super.key});
+  const CustomSimpleAppBar({required this.customAppBarAttribute, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +67,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: const TextStyle(color: Colors.white),
             )
           : null,
-      leading: customAppBarAttribute?.leading ?? const BackIcon(),
+      leading:
+          customAppBarAttribute?.appBarSideWidgets?.leading ?? const BackIcon(),
       actions: [
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: customAppBarAttribute?.trailing ?? const SizedBox(),
+          child: customAppBarAttribute?.appBarSideWidgets?.trailing ??
+              const SizedBox(),
         )
       ],
     );
@@ -30,12 +83,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class CustomAppBarAttribute {
-  String? title;
-  final Widget? trailing;
-  final Widget? leading;
+class AppBarSideWidgets {
+  Widget trailing;
+  Widget leading;
 
-  CustomAppBarAttribute({this.title, this.trailing, this.leading});
+  AppBarSideWidgets({required this.trailing, required this.leading});
+}
+
+class CustomAppBarAttribute {
+  String title;
+  String image;
+  AppBarSideWidgets appBarSideWidgets;
+
+  CustomAppBarAttribute(
+      {required this.title,
+      required this.image,
+      required this.appBarSideWidgets});
 }
 
 Widget _card(Widget? bottomView, {EdgeInsets? padding}) {
@@ -61,7 +124,7 @@ class BackCardOnTopView extends StatelessWidget {
 
   const BackCardOnTopView({
     required this.child,
-    this.onTopUiSpace = 70.0,
+    this.onTopUiSpace = 30.0,
     Key? key,
   }) : super(key: key);
 
