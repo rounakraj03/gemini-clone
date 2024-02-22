@@ -25,6 +25,12 @@ class _ChatScreenState extends State<ChatScreen> {
   final textController = TextEditingController();
   ChatRepository chatRepository = ChatRepository();
 
+  bool chatgptSelected = false;
+  final selectedImageSize = 40.0;
+  final unselectedImageSize = 30.0;
+  final selectedPaddingSize = 10.0;
+  final unselectedPaddingSize = 5.0;
+
   getChatResponse({required List<ChatModel> messages}) async {
     try {
       var result = await chatRepository
@@ -137,41 +143,109 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             CustomAppBar(
                 customAppBarAttribute: CustomAppBarAttribute(
-                    title: "Gemini",
-                    image: Assets.bardLogo,
                     appBarSideWidgets: AppBarSideWidgets(
-                      leading: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          // child: IconButton(
-                          //   icon: const Icon(
-                          //     Icons.arrow_back_ios,
-                          //     color: AppColors.desertStorm,
-                          //   ),
-                          //   onPressed: () {
-                          //     print("Back");
-                          //   },
-                          // ),
-                          child: Image.asset(Assets.chatGPTLogo),
-                        ),
-                      ),
-                      trailing: SizedBox(
-                        width: 80,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.menu_rounded,
-                            size: 35,
-                            color: AppColors.desertStorm,
+              leading: Row(
+                children: [
+                  InkWell(
+                    onTapDown: (details) {
+                      setState(() {
+                        chatgptSelected = true;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(
+                            chatgptSelected
+                                ? selectedPaddingSize
+                                : unselectedPaddingSize,
                           ),
-                          onPressed: () {
-                            print("Drawer");
-                            _scaffoldKey.currentState?.openDrawer();
-                          },
+                          decoration: BoxDecoration(
+                              color: AppColors.desertStorm,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: Image.asset(
+                            Assets.chatGPTLogo2,
+                            height: chatgptSelected
+                                ? selectedImageSize
+                                : unselectedImageSize,
+                            width: chatgptSelected
+                                ? selectedImageSize
+                                : unselectedImageSize,
+                            fit: BoxFit.cover,
+                            color: AppColors.scaffoldBgColor,
+                          ),
                         ),
-                      ),
-                    ))),
+                        const Text(
+                          "ChatGpt",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.desertStorm),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  InkWell(
+                    onTapDown: (details) {
+                      setState(() {
+                        chatgptSelected = false;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(
+                            chatgptSelected
+                                ? unselectedPaddingSize
+                                : selectedPaddingSize,
+                          ),
+                          decoration: BoxDecoration(
+                              color: AppColors.desertStorm,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: Image.asset(
+                            Assets.bardLogo,
+                            height: chatgptSelected
+                                ? unselectedImageSize
+                                : selectedImageSize,
+                            width: chatgptSelected
+                                ? unselectedImageSize
+                                : selectedImageSize,
+                            fit: BoxFit.cover,
+                            color: AppColors.scaffoldBgColor,
+                          ),
+                        ),
+                        const Text(
+                          "Gemini",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.desertStorm),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              trailing: SizedBox(
+                width: 80,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.menu_rounded,
+                    size: 35,
+                    color: AppColors.desertStorm,
+                  ),
+                  onPressed: () {
+                    print("Drawer");
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
+                ),
+              ),
+            ))),
             Expanded(
               child: BackCardOnTopView(
                 child: Column(
