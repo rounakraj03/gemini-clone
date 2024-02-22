@@ -42,12 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   abc() async {
     var result = await chatRepository
-        .getChatResponse(NewChatRequest(
+        .getGeminiChatResponse(GeminiNewChatRequest(
             new_message:
                 "Hi tell me the capital of india and 10 famous dishes here",
             old_message: [
-          ChatModel(role: 'user', parts: 'Hi I am rounak'),
-          ChatModel(role: 'model', parts: 'Hi Rounak, what can I do for you?')
+          GeminiChatModel(role: 'user', parts: 'Hi I am rounak'),
+          GeminiChatModel(
+              role: 'model', parts: 'Hi Rounak, what can I do for you?')
         ]))
         .listen((event) {
       print("event + $event");

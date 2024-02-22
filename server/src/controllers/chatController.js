@@ -45,14 +45,9 @@ const newChat = async (req, res, next) => {
         res.set({"Content-Type": "text/event-stream"});
 
 
-        let text = '';
         for await (const chunk of result.stream) {
             const data =  chunk.text() || "" ;
-            const formattedData = JSON.stringify(`status: 200, ${data}\n\n`);
-            // res.write(formattedData);
             res.write(data);
-            // res.write("abcdef");
-            // res.write({"abc": "def","ghi": "jkl"});
         }
 
         res.end();

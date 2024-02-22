@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-class ChatModel {
+class GeminiChatModel {
   String role;
   String parts;
-  ChatModel({
+  GeminiChatModel({
     required this.role,
     required this.parts,
   });
@@ -15,8 +15,8 @@ class ChatModel {
     };
   }
 
-  factory ChatModel.fromMap(Map<String, dynamic> map) {
-    return ChatModel(
+  factory GeminiChatModel.fromMap(Map<String, dynamic> map) {
+    return GeminiChatModel(
       role: map['role'] ?? '',
       parts: map['parts'] ?? '',
     );
@@ -24,6 +24,35 @@ class ChatModel {
 
   String toJson() => json.encode(toMap());
 
-  factory ChatModel.fromJson(String source) =>
-      ChatModel.fromMap(json.decode(source));
+  factory GeminiChatModel.fromJson(String source) =>
+      GeminiChatModel.fromMap(json.decode(source));
+}
+
+class ChatGPTChatModel {
+  String role;
+  String content;
+
+  ChatGPTChatModel({
+    required this.role,
+    required this.content,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'role': role,
+      'content': content,
+    };
+  }
+
+  factory ChatGPTChatModel.fromMap(Map<String, dynamic> map) {
+    return ChatGPTChatModel(
+      role: map['role'] ?? '',
+      content: map['content'] ?? '',
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ChatGPTChatModel.fromJson(String source) =>
+      ChatGPTChatModel.fromMap(json.decode(source));
 }

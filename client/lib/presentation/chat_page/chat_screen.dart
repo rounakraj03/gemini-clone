@@ -18,10 +18,17 @@ class _ChatScreenState extends State<ChatScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(); // Add a GlobalKey
 
-  List<ChatModel> chatModelList = [
-    ChatModel(role: 'user', parts: "Hi"),
-    ChatModel(role: 'model', parts: "Hi, How can I help you today"),
+  List<GeminiChatModel> geminiChatModelList = [
+    GeminiChatModel(role: 'user', parts: "Hi"),
+    GeminiChatModel(role: 'model', parts: "Hi, How can I help you today"),
   ];
+
+  List<ChatGPTChatModel> chatGPTChatModelList = [
+    ChatGPTChatModel(role: 'user', content: "Hi"),
+    ChatGPTChatModel(
+        role: 'assistant', content: "Hi, How can I help you today"),
+  ];
+
   final textController = TextEditingController();
   ChatRepository chatRepository = ChatRepository();
 
@@ -31,10 +38,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final selectedPaddingSize = 10.0;
   final unselectedPaddingSize = 5.0;
 
-  getChatResponse({required List<ChatModel> messages}) async {
+  getGeminiChatResponse({required List<GeminiChatModel> messages}) async {
     try {
       var result = await chatRepository
-          .getChatResponse(NewChatRequest(
+          .getGeminiChatResponse(GeminiNewChatRequest(
               new_message: messages.last.parts,
               old_message: messages.sublist(0, messages.length - 1)))
           .listen((event) {
@@ -46,10 +53,38 @@ class _ChatScreenState extends State<ChatScreen> {
         print("event : $event");
         scrollToBottom();
         setState(() {
-          if (chatModelList.last.role == "user") {
-            chatModelList.add(ChatModel(role: "model", parts: event));
+          if (geminiChatModelList.last.role == "user") {
+            geminiChatModelList
+                .add(GeminiChatModel(role: "model", parts: event));
           } else {
-            chatModelList.last.parts += event;
+            geminiChatModelList.last.parts += event;
+          }
+        });
+      });
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  getChatGPTChatResponse({required List<ChatGPTChatModel> messages}) async {
+    try {
+      var result = await chatRepository
+          .getChatGPTChatResponse(
+              ChatGPTNewChatRequest(new_message: "hi", old_message: messages))
+          .listen((event) {
+        if (event == "") {
+          event = "\n\n";
+        } else {
+          event += "\n";
+        }
+        print("event : $event");
+        scrollToBottom();
+        setState(() {
+          if (chatGPTChatModelList.last.role == "user") {
+            chatGPTChatModelList
+                .add(ChatGPTChatModel(role: "assistant", content: event));
+          } else {
+            chatGPTChatModelList.last.content += event;
           }
         });
       });
@@ -251,14 +286,25 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                        child: ListView.separated(
-                      controller: _scrollController,
-                      itemBuilder: (context, index) =>
-                          _chatBubble(chatModelList[index]),
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 20),
-                      itemCount: chatModelList.length,
-                    )),
+                        child: (chatgptSelected)
+                            ? ListView.separated(
+                                controller: _scrollController,
+                                itemBuilder: (context, index) =>
+                                    _chatGPTChatBubble(
+                                        chatGPTChatModelList[index]),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 20),
+                                itemCount: chatGPTChatModelList.length,
+                              )
+                            : ListView.separated(
+                                controller: _scrollController,
+                                itemBuilder: (context, index) =>
+                                    _geminiChatBubble(
+                                        geminiChatModelList[index]),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(height: 20),
+                                itemCount: geminiChatModelList.length,
+                              )),
                     Row(
                       children: [
                         Expanded(
@@ -283,12 +329,23 @@ class _ChatScreenState extends State<ChatScreen> {
                               if (textController.text.isNotEmpty) {
                                 setState(() {
                                   scrollToBottom();
-                                  chatModelList.add(ChatModel(
-                                      role: 'user',
-                                      parts: textController.text));
-                                  textController.clear();
-                                  FocusScope.of(context).unfocus();
-                                  getChatResponse(messages: chatModelList);
+                                  if (chatgptSelected) {
+                                    chatGPTChatModelList.add(ChatGPTChatModel(
+                                        role: 'user',
+                                        content: textController.text));
+                                    textController.clear();
+                                    FocusScope.of(context).unfocus();
+                                    getChatGPTChatResponse(
+                                        messages: chatGPTChatModelList);
+                                  } else {
+                                    geminiChatModelList.add(GeminiChatModel(
+                                        role: 'user',
+                                        parts: textController.text));
+                                    textController.clear();
+                                    FocusScope.of(context).unfocus();
+                                    getGeminiChatResponse(
+                                        messages: geminiChatModelList);
+                                  }
                                 });
                               }
                             },
@@ -316,7 +373,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ));
   }
 
-  Widget _chatBubble(ChatModel chatModel) {
+  Widget _geminiChatBubble(GeminiChatModel chatModel) {
     if (chatModel.role == 'model') {
       return Row(
         children: [
@@ -357,6 +414,68 @@ class _ChatScreenState extends State<ChatScreen> {
                   borderRadius: BorderRadius.circular(20)),
               child: Text(
                 chatModel.parts,
+                style: const TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          SizedBox(
+            height: 50,
+            width: 50,
+            child: Image.asset(
+              Assets.benLogo,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget _chatGPTChatBubble(ChatGPTChatModel chatModel) {
+    if (chatModel.role == 'assistant') {
+      return Row(
+        children: [
+          SizedBox(
+            height: 50,
+            width: 50,
+            child: Image.asset(
+              Assets.chatGPTLogo2,
+              fit: BoxFit.cover,
+              color: AppColors.chatGPTColor,
+            ),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                  color: AppColors.greyBgColor,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                chatModel.content,
+                style: const TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ),
+          )
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                  color: AppColors.greyBgColor,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                chatModel.content,
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
             ),

@@ -4,7 +4,7 @@ import 'package:client/res/assets.dart';
 import 'package:flutter/material.dart';
 
 class GeminiChatBubble extends StatefulWidget {
-  final List<ChatModel> chatModelList;
+  final List<GeminiChatModel> chatModelList;
   const GeminiChatBubble({required this.chatModelList, super.key});
 
   @override
@@ -21,7 +21,7 @@ class _GeminiChatBubbleState extends State<GeminiChatBubble> {
     );
   }
 
-  Widget _chatBubble(ChatModel chatModel) {
+  Widget _chatBubble(GeminiChatModel chatModel) {
     if (chatModel.role == 'model') {
       return Row(
         children: [

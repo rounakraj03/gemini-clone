@@ -15,7 +15,7 @@ app.use(urlInformation);
 
 // app.use("/user");
 app.use("/chat", require("./routes/chatRoutes"));
-app.use("/user", require("./routes/userRoutes"));
+app.use("/chatgpt", require("./routes/chatgptRoutes"));
 
 
 app.get("/", (req, res) => {

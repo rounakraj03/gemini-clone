@@ -6,4 +6,5 @@ class AppColors {
   static const Color greyBgColor = Color.fromARGB(255, 216, 213, 213);
   static const Color greyTextColor = Color(0xffbcbdbd);
   static const Color desertStorm = Color(0xFFF8F8F8);
+  static const Color chatGPTColor = Color(0xFF159c7c);
 }
