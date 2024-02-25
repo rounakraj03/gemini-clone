@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { urlInformation } = require("./middleware/urlInformation");
 const errorHandler = require("./middleware/errorHandler");
+const {mongoose} = require("mongoose");
 const dotenv = require("dotenv").config();
 
 const app = express();
@@ -26,18 +27,26 @@ app.get("/", (req, res) => {
 app.use(errorHandler);
 
 
-app.listen(port, "192.168.2.192",  () => {
-    let date_ob = new Date();
-
-    //current hours 
-    let hours = date_ob.getHours();
-
-    //current minutes
-    let minutes  = date_ob.getMinutes();
-
-    //current seconds
-    let seconds = date_ob.getSeconds();
-
-    console.log(`server is running in port ${port} // time-> ${hours} : ${minutes} : ${seconds}`);
-
+mongoose.connect(
+    `mongodb+srv://${process.env.MONGOOSE_USERNAME}:${process.env.MONGOOSE_PASSWORD}@ai-chats.mhctans.mongodb.net/?retryWrites=true&w=majority&appName=ai-chats`)
+    .then((result) => {
+    // app.listen(port, "192.168.2.192",  () => {
+    app.listen(port, () => {
+        let date_ob = new Date();
+    
+        //current hours 
+        let hours = date_ob.getHours();
+    
+        //current minutes
+        let minutes  = date_ob.getMinutes();
+    
+        //current seconds
+        let seconds = date_ob.getSeconds();
+    
+        console.log(`server is running in port ${port} // mongoose server connected // time-> ${hours} : ${minutes} : ${seconds}`);
+    
+    });
+    
+}).catch((err) => {
+    console.log(`Error in running server ${err}`);    
 });
