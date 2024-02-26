@@ -46,28 +46,29 @@ const newChat = async (req, res, next) => {
         };
         console.log(`Streamed Text=> ${streamTxt}, old_message: ${old_message}, old_message.lenth => ${old_message.length}`);
 
-        if(chatId) {
-            const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
-                chatId,
-                {
-                    chatHistory: JSON.stringify(chatHistory),
-                },
-                {new: true}
-            );
+        addOrUpdateChatHistory({chatId : chatId, userId: userId, chatHistory: chatHistory});
+        // if(chatId) {
+        //     const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
+        //         chatId,
+        //         {
+        //             chatHistory: JSON.stringify(chatHistory),
+        //         },
+        //         {new: true}
+        //     );
 
-            if(!updatedChatGptSavedData) {
-                res.status(404);
-                throw new Error("Chat history not found");
-            }
-            console.log("chat History Founded");
-        } else {
-            const newChatGptSavedData = new chatGPThistoryModel({
-                userId: userId,
-                chatHistory: JSON.stringify(chatHistory),
-            });
-            console.log("chat History Not Founded");
-            const savedChatGptData = await newChatGptSavedData.save();
-        }
+        //     if(!updatedChatGptSavedData) {
+        //         res.status(404);
+        //         throw new Error("Chat history not found");
+        //     }
+        //     console.log("chat History Founded");
+        // } else {
+        //     const newChatGptSavedData = new chatGPThistoryModel({
+        //         userId: userId,
+        //         chatHistory: JSON.stringify(chatHistory),
+        //     });
+        //     console.log("chat History Not Founded");
+        //     const savedChatGptData = await newChatGptSavedData.save();
+        // }
 
         res.end();
     } catch (error) {
@@ -75,6 +76,28 @@ const newChat = async (req, res, next) => {
     }
 }
 
+
+const addOrUpdateChatHistory = async ({chatId=null, userId,  chatHistory}) => {
+    if(chatId) {
+        const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
+            chatId,
+            {
+                chatHistory: JSON.stringify(chatHistory),
+            }, {new: true}
+        );
+        if(!updatedChatGptSavedData) {
+            throw new Error("Chat history not found");
+        }
+        return updatedChatGptSavedData; 
+    } else {
+        const newChatGptSavedData = new chatGPThistoryModel({
+            userId: userId,
+            chatHistory: JSON.stringify(chatHistory),
+        });
+        const savedChatGptData = await newChatGptSavedData.save();
+        return savedChatGptData;
+    }
+}
 
 
 
