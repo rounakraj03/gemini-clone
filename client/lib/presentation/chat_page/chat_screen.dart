@@ -72,7 +72,8 @@ class _ChatScreenState extends State<ChatScreen> {
           .getChatGPTChatResponse(ChatGPTNewChatRequest(
               new_message: "hi",
               old_message: messages,
-              userId: "65dc4685d23b1f44f89babb1"))
+              userId: "65dc4685d23b1f44f89babb1",
+              chatId: "65dce6373ec27f929b594195"))
           .listen((event) {
         if (event == "") {
           event = "\n\n";

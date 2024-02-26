@@ -22,13 +22,11 @@ const chatGPThistorySchema = new Schema({
             type: String,
         },
         conversation_List : []
-    },
-    
-    lastUpdated: {
-        type: Date,
-        required: true
-    }
-});
+    }, 
+}, {timestamps: true});
 
 
-module.exports = mongoose.model("chatgptHistory", chatGPThistorySchema, "chatgptHistory");
+const chatGPThistoryModel = mongoose.model("chatgptHistory", chatGPThistorySchema, "chatgptHistory");
+
+
+module.exports = chatGPThistoryModel;

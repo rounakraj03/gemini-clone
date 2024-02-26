@@ -1,5 +1,6 @@
 const { OpenAI } = require("openai");
 const chatgpt_history_model = require("../models/chatgpt_history_model");
+const chatGPThistoryModel = require("../models/chatgpt_history_model");
 
 
 const openai = new OpenAI({
@@ -36,18 +37,20 @@ const newChat = async (req, res, next) => {
             streamTxt += data;
             res.write(data);
         }
-        req.body.userId = userId;
-        req.body.chatHistory = {
+
+        old_message.push({"role": "assistant", "content": streamTxt});
+
+        const chatHistory = {
             "heading" : `${new Date()}`,
-            "conversation_List" : old_message.push({"role": "assistant", "content": streamTxt})
+            "conversation_List" : JSON.stringify(old_message)
         };
+        console.log(`Streamed Text=> ${streamTxt}, old_message: ${old_message}, old_message.lenth => ${old_message.length}`);
 
         if(chatId) {
-            const updatedChatGptSavedData = await chatgpt_history_model.findByIdAndUpdate(
+            const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
                 chatId,
                 {
-                    chatHistory: chatHistory,
-                    lastUpdated: new Date()
+                    chatHistory: JSON.stringify(chatHistory),
                 },
                 {new: true}
             );
@@ -56,21 +59,22 @@ const newChat = async (req, res, next) => {
                 res.status(404);
                 throw new Error("Chat history not found");
             }
+            console.log("chat History Founded");
         } else {
-            const newChatGptSavedData = new chatgpt_history_model({
+            const newChatGptSavedData = new chatGPThistoryModel({
                 userId: userId,
-                chatHistory: chatHistory,
-                lastUpdated: new Date()
+                chatHistory: JSON.stringify(chatHistory),
             });
+            console.log("chat History Not Founded");
             const savedChatGptData = await newChatGptSavedData.save();
         }
 
         res.end();
-
     } catch (error) {
      next(error);
     }
 }
+
 
 
 
@@ -84,7 +88,7 @@ const getChatGptHistory = async (req, res, next) => {
             res.status(405);
             throw new Error("All fields are mandatory");  
         }
-        const userChat = await chatgpt_history_model.find({userId : userId}).sort({lastUpdated : -1});
+        const userChat = await chatGPThistoryModel.find({userId : userId}).sort({updatedAt : -1});
         res.status(200).json(userChat);
 
 
@@ -107,11 +111,10 @@ const addChatGptHistory = async (req, res, next) => {
         }
 
         if(chatId) {
-            const updatedChatGptSavedData = await chatgpt_history_model.findByIdAndUpdate(
+            const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
                 chatId,
                 {
                     chatHistory: chatHistory,
-                    lastUpdated: new Date()
                 },
                 {new: true}
             );
@@ -125,7 +128,6 @@ const addChatGptHistory = async (req, res, next) => {
             const newChatGptSavedData = new chatgpt_history_model({
                 userId: userId,
                 chatHistory: chatHistory,
-                lastUpdated: new Date()
             });
             const savedChatGptData = await newChatGptSavedData.save();
             res.status(200).json(savedChatGptData);
