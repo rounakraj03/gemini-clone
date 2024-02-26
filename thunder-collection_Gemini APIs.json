@@ -1,0 +1,140 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Gemini APIs",
+    "dateExported": "2024-02-26T13:12:23.887Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "c12343c8-63f7-44ff-96c5-42e84be9d8b0",
+            "name": "gemini",
+            "containerId": "",
+            "created": "2024-02-19T08:51:24.002Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "6d4c4edc-80cf-4724-979f-5078ec82827c",
+            "name": "user",
+            "containerId": "",
+            "created": "2024-02-26T08:04:48.263Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "5a0811ee-a948-4d4b-95a4-e5efba868a05",
+            "name": "chatgpt",
+            "containerId": "",
+            "created": "2024-02-26T10:52:51.264Z",
+            "sortNum": 30000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "88cf2abe-3cdb-4504-8451-f1840b889172",
+            "colId": "37e8a0e2-bea0-4802-bcb2-765e6a09de96",
+            "containerId": "c12343c8-63f7-44ff-96c5-42e84be9d8b0",
+            "name": "new-chat",
+            "url": "http://localhost:8002/chat/new-chat",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-02-19T08:51:33.537Z",
+            "modified": "2024-02-19T08:56:45.587Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "83b39751-4fb4-42a3-9d9b-22aad990a170",
+            "colId": "37e8a0e2-bea0-4802-bcb2-765e6a09de96",
+            "containerId": "6d4c4edc-80cf-4724-979f-5078ec82827c",
+            "name": "signup",
+            "url": "http://localhost:8002/user/signup",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-02-26T08:04:54.251Z",
+            "modified": "2024-02-26T08:06:29.186Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"rounakraj@gmail.com\",\n  \"password\": \"123456\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "267d95a7-6ad2-41c6-8549-a5ff1cfa531b",
+            "colId": "37e8a0e2-bea0-4802-bcb2-765e6a09de96",
+            "containerId": "6d4c4edc-80cf-4724-979f-5078ec82827c",
+            "name": "login",
+            "url": "http://localhost:8002/user/login",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2024-02-26T09:12:12.262Z",
+            "modified": "2024-02-26T09:12:51.044Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"rounakraj@gmail.com\",\n  \"password\": \"123456\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "a2f10dc0-0e1d-4b1f-a1be-b0071b7d5a5c",
+            "colId": "37e8a0e2-bea0-4802-bcb2-765e6a09de96",
+            "containerId": "5a0811ee-a948-4d4b-95a4-e5efba868a05",
+            "name": "chatgpt/getChatGptHistory",
+            "url": "http://192.168.2.192:8002/chatgpt/getChatGptHistory",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-02-26T10:53:04.481Z",
+            "modified": "2024-02-26T12:55:29.348Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"userId\": \"65dc4685d23b1f44f89babb1\"\n  \n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "3741f2f8-c37d-4faa-b3d3-8f5a75c79a26",
+            "colId": "37e8a0e2-bea0-4802-bcb2-765e6a09de96",
+            "containerId": "5a0811ee-a948-4d4b-95a4-e5efba868a05",
+            "name": "chatgpt/addChatGptHistory",
+            "url": "http://localhost:8002/chatgpt/addChatGptHistory",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2024-02-26T10:53:59.985Z",
+            "modified": "2024-02-26T12:19:07.915Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"userId\": \"65dc4685d23b1f44f89babb1\",\n  \"chatHistory\": {\n    \"heading\": \"Wassup Mumbai\",\n    \"conversation_List\": [\n      \"Hi\", \"Hello\", \"How can I help you?\", \"Make me a coffee\", \"Yess Sir, your wish my command\"]\n  }\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "0301b615-ccde-4656-a2d3-6ba891f583d6",
+            "colId": "37e8a0e2-bea0-4802-bcb2-765e6a09de96",
+            "containerId": "5a0811ee-a948-4d4b-95a4-e5efba868a05",
+            "name": "chatgpt/new-chat",
+            "url": "http://192.168.2.192:8002/chatgpt/new-chat",
+            "method": "POST",
+            "sortNum": 80000,
+            "created": "2024-02-26T13:01:51.329Z",
+            "modified": "2024-02-26T13:09:17.049Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n   \"new_message\" : {\"role\": \"user\", \"content\": \"hi\"},\n  \"old_message\": [{\"role\": \"user\", \"content\": \"hi\"}],\n  \"userId\" : \"65dc4685d23b1f44f89babb1\",\n  \"chatId\": null\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}

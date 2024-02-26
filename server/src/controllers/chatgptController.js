@@ -1,4 +1,5 @@
 const { OpenAI } = require("openai");
+const chatgpt_history_model = require("../models/chatgpt_history_model");
 
 
 const openai = new OpenAI({
@@ -10,8 +11,8 @@ const openai = new OpenAI({
 //@access Public
 const newChat = async (req, res, next) => {
     try {
-        const {old_message, new_message} = req.body;
-        if(!old_message || !new_message) {
+        const {old_message, new_message, userId, chatId} = req.body;
+        if(!old_message || !new_message || !userId) {
             res.status(405);
             throw new Error("All fields are mandatory");  
         }
@@ -29,20 +30,118 @@ const newChat = async (req, res, next) => {
 
         res.set({"Content-Type": "text/event-stream"});
 
-
+        var streamTxt = "";
         for await (const chunk of result) {
             const data = chunk.choices[0].delta.content || "";
+            streamTxt += data;
             res.write(data);
         }
+        req.body.userId = userId;
+        req.body.chatHistory = {
+            "heading" : `${new Date()}`,
+            "conversation_List" : old_message.push({"role": "assistant", "content": streamTxt})
+        };
+
+        if(chatId) {
+            const updatedChatGptSavedData = await chatgpt_history_model.findByIdAndUpdate(
+                chatId,
+                {
+                    chatHistory: chatHistory,
+                    lastUpdated: new Date()
+                },
+                {new: true}
+            );
+
+            if(!updatedChatGptSavedData) {
+                res.status(404);
+                throw new Error("Chat history not found");
+            }
+        } else {
+            const newChatGptSavedData = new chatgpt_history_model({
+                userId: userId,
+                chatHistory: chatHistory,
+                lastUpdated: new Date()
+            });
+            const savedChatGptData = await newChatGptSavedData.save();
+        }
+
         res.end();
+
     } catch (error) {
      next(error);
     }
 }
 
 
+
+//@desc Use to do signup
+//@route POST /chatgpt/getChatGptHistory
+//@access Public
+const getChatGptHistory = async (req, res, next) => {
+    try {
+        const {userId} = req.body;
+        if(!userId) {
+            res.status(405);
+            throw new Error("All fields are mandatory");  
+        }
+        const userChat = await chatgpt_history_model.find({userId : userId}).sort({lastUpdated : -1});
+        res.status(200).json(userChat);
+
+
+    } catch (error) {
+        console.log(`Error:> ${error}`);
+        next(error);
+    }
+}
+
+
+//@desc Use to do signup
+//@route POST /user/addChatGptHistory
+//@access Public
+const addChatGptHistory = async (req, res, next) => {
+    try {
+        const {userId, chatHistory, chatId} = req.body;
+        if(!userId || !chatHistory) {
+            res.status(405);
+            throw new Error("All fields are mandatory");  
+        }
+
+        if(chatId) {
+            const updatedChatGptSavedData = await chatgpt_history_model.findByIdAndUpdate(
+                chatId,
+                {
+                    chatHistory: chatHistory,
+                    lastUpdated: new Date()
+                },
+                {new: true}
+            );
+
+            if(!updatedChatGptSavedData) {
+                res.status(404);
+                throw new Error("Chat history not found");
+            }
+            res.status(200).json(updatedChatGptSavedData);
+        } else {
+            const newChatGptSavedData = new chatgpt_history_model({
+                userId: userId,
+                chatHistory: chatHistory,
+                lastUpdated: new Date()
+            });
+            const savedChatGptData = await newChatGptSavedData.save();
+            res.status(200).json(savedChatGptData);
+        }
+    } catch (error) {
+        console.log(`Error: ${error}`);
+        next(error);
+    }
+}
+
+
+
 module.exports = {
-    newChat
+    newChat,
+    getChatGptHistory,
+    addChatGptHistory
 }
 
 

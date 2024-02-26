@@ -35,16 +35,22 @@ class GeminiNewChatRequest {
 class ChatGPTNewChatRequest {
   String new_message;
   List<ChatGPTChatModel> old_message;
+  String userId;
+  String? chatId;
 
   ChatGPTNewChatRequest({
     required this.new_message,
     required this.old_message,
+    required this.userId,
+    this.chatId,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'new_message': new_message,
       'old_message': old_message.map((x) => x.toMap()).toList(),
+      'userId': userId,
+      'chatId': chatId,
     };
   }
 
@@ -53,6 +59,8 @@ class ChatGPTNewChatRequest {
       new_message: map['new_message'] ?? '',
       old_message: List<ChatGPTChatModel>.from(
           map['old_message']?.map((x) => ChatGPTChatModel.fromMap(x))),
+      userId: map['userId'] ?? '',
+      chatId: map['chatId'],
     );
   }
 

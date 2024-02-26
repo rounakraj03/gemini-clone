@@ -69,8 +69,10 @@ class _ChatScreenState extends State<ChatScreen> {
   getChatGPTChatResponse({required List<ChatGPTChatModel> messages}) async {
     try {
       var result = await chatRepository
-          .getChatGPTChatResponse(
-              ChatGPTNewChatRequest(new_message: "hi", old_message: messages))
+          .getChatGPTChatResponse(ChatGPTNewChatRequest(
+              new_message: "hi",
+              old_message: messages,
+              userId: "65dc4685d23b1f44f89babb1"))
           .listen((event) {
         if (event == "") {
           event = "\n\n";

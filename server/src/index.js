@@ -14,8 +14,8 @@ app.use(cors());
 
 app.use(urlInformation);
 
-// app.use("/user");
-app.use("/chat", require("./routes/chatRoutes"));
+app.use("/user", require("./routes/userRoutes"));
+app.use("/gemini", require("./routes/geminiRoutes"));
 app.use("/chatgpt", require("./routes/chatgptRoutes"));
 
 
@@ -30,8 +30,8 @@ app.use(errorHandler);
 mongoose.connect(
     `mongodb+srv://${process.env.MONGOOSE_USERNAME}:${process.env.MONGOOSE_PASSWORD}@ai-chats.mhctans.mongodb.net/?retryWrites=true&w=majority&appName=ai-chats`)
     .then((result) => {
-    // app.listen(port, "192.168.2.192",  () => {
-    app.listen(port, () => {
+    app.listen(port, "192.168.2.192",  () => {
+    // app.listen(port, () => {
         let date_ob = new Date();
     
         //current hours 

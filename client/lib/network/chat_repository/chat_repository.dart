@@ -7,10 +7,10 @@ import 'package:dio/dio.dart';
 
 class ChatRepository {
   Dio _dio = Dio();
-  // final baseUrl = "http://192.168.2.192:8002/";
-  final baseUrl = "http://35.154.226.55:8080/";
+  final baseUrl = "http://192.168.2.192:8002/";
+  // final baseUrl = "http://35.154.226.55:8080/";
 
-  final geminiNewChatUrl = "chat/new-chat";
+  final geminiNewChatUrl = "gemini/new-chat";
   final chatGPTNewChatUrl = "chatgpt/new-chat";
 
   ChatRepository() {
