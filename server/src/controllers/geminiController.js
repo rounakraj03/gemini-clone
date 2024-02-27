@@ -156,21 +156,17 @@ async function run(req, res) {
 //@access Public
 const getGeminiHistory = async (req, res, next) => {
   try {
-      const {email, password} = req.body;
-      if(!email || !password) {
-          res.status(405);
-          throw new Error("All fields are mandatory");  
-      }
-      const user = new user_model({
-          email: email,
-          password: password
-      });
-      const savedUser = await user.save();
-      res.status(200).json(savedUser);
-  } catch (error) {
-      console.log(`Error:> ${error}`);
-      next(error);
-  }
+    const {userId} = req.body;
+    if(!userId) {
+        res.status(405);
+        throw new Error("All fields are mandatory");  
+    }
+    const userChat = await geminiHistoryModel.find({userId : userId}).sort({updatedAt : -1});
+    res.status(200).json(userChat);
+} catch (error) {
+    console.log(`Error:> ${error}`);
+    next(error);
+}
 }
 
 
