@@ -18,6 +18,14 @@ const newChat = async (req, res, next) => {
             throw new Error("All fields are mandatory");  
         }
 
+        const chatHistory1 = old_message;
+        let new_chat_id = chatId;
+
+        if(!chatId) {
+            const addedChatDataInfo = await addOrUpdateChatHistory({chatId : chatId, userId: userId, chatHistory: chatHistory1});
+            new_chat_id = addedChatDataInfo.id;
+        }
+
         const result = await openai.chat.completions.create({
             model: "gpt-3.5-turbo-16k",
             messages: old_message,
@@ -30,16 +38,7 @@ const newChat = async (req, res, next) => {
         });
 
         res.set({"Content-Type": "text/event-stream"});
-
-        const chatHistory1 = old_message;
-        let new_chat_id = chatId;
-
-        if(!chatId) {
-            const addedChatDataInfo = await addOrUpdateChatHistory({chatId : chatId, userId: userId, chatHistory: chatHistory1});
-            // console.log("Added Chat Entry -> ", addedChatDataInfo);
-            // console.log("chatId = ", addedChatDataInfo.id)
-            new_chat_id = addedChatDataInfo.id;
-        }
+       
 
         var streamTxt = "";
         for await (const chunk of result) {
