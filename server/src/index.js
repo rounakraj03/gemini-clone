@@ -30,9 +30,9 @@ app.use(errorHandler);
 mongoose.connect(
     `mongodb+srv://${process.env.MONGOOSE_USERNAME}:${process.env.MONGOOSE_PASSWORD}@ai-chats.mhctans.mongodb.net/?retryWrites=true&w=majority&appName=ai-chats`)
     .then((result) => {
+    // app.listen(port, "192.168.29.234",  () => {
     // app.listen(port, "192.168.2.192",  () => {
-    app.listen(port, "192.168.29.234",  () => {
-    // app.listen(port, () => {
+    app.listen(port, () => {
         let date_ob = new Date();
     
         //current hours 
