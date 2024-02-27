@@ -187,7 +187,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           height: 5,
                         ),
                         const Text(
-                          "9315045029",
+                          "rounakraj@gmail.com",
                           style: TextStyle(
                               color: AppColors.desertStorm, fontSize: 18),
                         )
@@ -195,7 +195,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
               } else {
                 return ListTile(
-                    title: const Text('History 1'),
+                    title: chatgptSelected
+                        ? Text(chatgptDrawerData[index - 1].heading)
+                        : Text(geminiDrawerData[index - 1].heading),
                     onTap: () {
                       Navigator.pop(context);
                     });

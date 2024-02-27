@@ -65,10 +65,12 @@ class GeminiDrawerResponse {
 }
 
 class ChatGPTDrawerResponse {
+  String id;
   String userId;
   String heading;
   List<ChatGPTChatModel> chatHistory;
   ChatGPTDrawerResponse({
+    required this.id,
     required this.userId,
     required this.heading,
     required this.chatHistory,
@@ -76,6 +78,7 @@ class ChatGPTDrawerResponse {
 
   Map<String, dynamic> toMap() {
     return {
+      '_id': id,
       'userId': userId,
       'heading': heading,
       'chatHistory': chatHistory.map((x) => x.toMap()).toList(),
@@ -84,16 +87,16 @@ class ChatGPTDrawerResponse {
 
   factory ChatGPTDrawerResponse.fromMap(Map<String, dynamic> map) {
     return ChatGPTDrawerResponse(
+      id: map['_id'] ?? '',
       userId: map['userId'] ?? '',
       heading: map['heading'] ?? '',
-      chatHistory: (map['chatHistory'] as List<dynamic>?)
-          ?.map((chatMap) => ChatGPTChatModel.fromMap(chatMap as Map<String, dynamic>))
-          .toList() ?? [],
+      chatHistory: List<ChatGPTChatModel>.from(
+          map['chatHistory']?.map((x) => ChatGPTChatModel.fromMap(x))),
     );
   }
 
-
   String toJson() => json.encode(toMap());
 
-  factory ChatGPTDrawerResponse.fromJson(String source) => ChatGPTDrawerResponse.fromMap(json.decode(source));
+  factory ChatGPTDrawerResponse.fromJson(String source) =>
+      ChatGPTDrawerResponse.fromMap(json.decode(source));
 }

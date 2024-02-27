@@ -28,10 +28,8 @@ class ChatRepository {
     try {
       final apiUrl = baseUrl + geminiChatHistory;
       final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
-      final List<dynamic> responseData = response.data;
-      final List<GeminiDrawerResponse> result = responseData
-          .map((data) => GeminiDrawerResponse.fromJson(data))
-          .toList();
+      List<GeminiDrawerResponse> result = [];
+      response.data.forEach((e) => result.add(GeminiDrawerResponse.fromMap(e)));
       return result;
     } catch (e) {
       print("error : $e");
@@ -44,8 +42,10 @@ class ChatRepository {
     try {
       final apiUrl = baseUrl + chatGPTChatHistory;
       final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
-      final List<dynamic> responseData = response.data;
-      final List<ChatGPTDrawerResponse> result = responseData.map((e) => ChatGPTDrawerResponse.fromJson(jsonEncode(responseData))).toList();
+      List<ChatGPTDrawerResponse> result = [];
+      response.data
+          .forEach((e) => result.add(ChatGPTDrawerResponse.fromMap(e)));
+
       return result;
     } catch (e) {
       print("error : $e");
@@ -73,28 +73,6 @@ class ChatRepository {
         final chatResponse = NewChatResponse.fromJson(jsonString);
         yield chatResponse;
       }
-
-      // StreamTransformer<Uint8List, List<int>> uint8Transformer =
-      //     StreamTransformer.fromHandlers(
-      //   handleData: (data, sink) {
-      //     sink.add(List<int>.from(data));
-      //   },
-      // );
-
-      // response.data?.stream
-      //     .transform(uint8Transformer)
-      //     .transform(const Utf8Decoder())
-      //     .transform(const LineSplitter())
-      //     .listen((event) {
-      //   try {
-      //     controller.add(event);
-      //   } catch (e) {
-      //     print("Error: $e");
-      //   }
-      // });
-      // await for (final value in controller.stream) {
-      //   yield value;
-      // }
     } catch (e) {
       print("error : $e");
     }
@@ -122,28 +100,6 @@ class ChatRepository {
         final chatResponse = NewChatResponse.fromJson(jsonString);
         yield chatResponse;
       }
-
-      // StreamTransformer<Uint8List, List<int>> uint8Transformer =
-      //     StreamTransformer.fromHandlers(
-      //   handleData: (data, sink) {
-      //     sink.add(List<int>.from(data));
-      //   },
-      // );
-
-      // response.data?.stream
-      //     .transform(uint8Transformer)
-      //     .transform(const Utf8Decoder())
-      //     .transform(const LineSplitter())
-      //     .listen((event) {
-      //   try {
-      //     controller.add(event);
-      //   } catch (e) {
-      //     print("Error: $e");
-      //   }
-      // });
-      // await for (final value in controller.stream) {
-      //   yield value;
-      // }
     } catch (e) {
       print("error : $e");
     }
