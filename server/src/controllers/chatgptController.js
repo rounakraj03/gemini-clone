@@ -31,45 +31,33 @@ const newChat = async (req, res, next) => {
 
         res.set({"Content-Type": "text/event-stream"});
 
+        const chatHistory1 = old_message;
+        let new_chat_id = chatId;
+
+        if(!chatId) {
+            const addedChatDataInfo = await addOrUpdateChatHistory({chatId : chatId, userId: userId, chatHistory: chatHistory1});
+            // console.log("Added Chat Entry -> ", addedChatDataInfo);
+            // console.log("chatId = ", addedChatDataInfo.id)
+            new_chat_id = addedChatDataInfo.id;
+        }
+
         var streamTxt = "";
         for await (const chunk of result) {
             const data = chunk.choices[0].delta.content || "";
             streamTxt += data;
-            res.write(data);
+            const formattedText = {
+                chatId: new_chat_id,
+                data: data
+            };
+            res.write(JSON.stringify(formattedText));
         }
 
         old_message.push({"role": "assistant", "content": streamTxt});
 
-        const chatHistory = {
-            "heading" : `${new Date()}`,
-            "conversation_List" : JSON.stringify(old_message)
-        };
+        const chatHistory = old_message;
         console.log(`Streamed Text=> ${streamTxt}, old_message: ${old_message}, old_message.lenth => ${old_message.length}`);
 
-        addOrUpdateChatHistory({chatId : chatId, userId: userId, chatHistory: chatHistory});
-        // if(chatId) {
-        //     const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
-        //         chatId,
-        //         {
-        //             chatHistory: JSON.stringify(chatHistory),
-        //         },
-        //         {new: true}
-        //     );
-
-        //     if(!updatedChatGptSavedData) {
-        //         res.status(404);
-        //         throw new Error("Chat history not found");
-        //     }
-        //     console.log("chat History Founded");
-        // } else {
-        //     const newChatGptSavedData = new chatGPThistoryModel({
-        //         userId: userId,
-        //         chatHistory: JSON.stringify(chatHistory),
-        //     });
-        //     console.log("chat History Not Founded");
-        //     const savedChatGptData = await newChatGptSavedData.save();
-        // }
-
+        addOrUpdateChatHistory({chatId : new_chat_id, userId: userId, chatHistory: chatHistory});
         res.end();
     } catch (error) {
      next(error);
@@ -82,7 +70,7 @@ const addOrUpdateChatHistory = async ({chatId=null, userId,  chatHistory}) => {
         const updatedChatGptSavedData = await chatGPThistoryModel.findByIdAndUpdate(
             chatId,
             {
-                chatHistory: JSON.stringify(chatHistory),
+                chatHistory: chatHistory,
             }, {new: true}
         );
         if(!updatedChatGptSavedData) {
@@ -90,9 +78,11 @@ const addOrUpdateChatHistory = async ({chatId=null, userId,  chatHistory}) => {
         }
         return updatedChatGptSavedData; 
     } else {
+        //generate a heading here
         const newChatGptSavedData = new chatGPThistoryModel({
             userId: userId,
-            chatHistory: JSON.stringify(chatHistory),
+            chatHistory: chatHistory,
+            heading: `${new Date()}`
         });
         const savedChatGptData = await newChatGptSavedData.save();
         return savedChatGptData;

@@ -16,13 +16,8 @@ const chatGPThistorySchema = new Schema({
         ref: userSchema, // Referencing the 'User' model
         required: true
     },
-
-    chatHistory: {
-        heading: {
-            type: String,
-        },
-        conversation_List : []
-    }, 
+    heading: String,
+    chatHistory: [] 
 }, {timestamps: true});
 
 
