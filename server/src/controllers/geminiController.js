@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const geminiHistoryModel = require("../models/gemini_history_model");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -24,11 +25,23 @@ new_message = "Can you use internet and if yes whats 1 USD = INR?"
 */
 const newChat = async (req, res, next) => {
     try {
-        const {old_message, new_message} = req.body;
-        if(!old_message || !new_message) {
+      const {old_message, new_message, userId, chatId} = req.body;
+      if(!old_message || !new_message || !userId) {
             res.status(405);
             throw new Error("All fields are mandatory");  
         }
+
+        const new_message_json = {
+          role:'user',
+          parts:new_message
+        } 
+        const chatHistory1 = [...old_message, new_message_json];
+        let new_chat_id = chatId;
+
+        if(!chatId) {
+          const addedChatDataInfo = await addOrUpdateChatHistory({chatId : chatId, userId: userId, chatHistory: chatHistory1});
+          new_chat_id = addedChatDataInfo.id;
+      }
 
         const model = genAI.getGenerativeModel({ model: "gemini-pro"});
         const chat = model.startChat({
@@ -44,12 +57,20 @@ const newChat = async (req, res, next) => {
 
         res.set({"Content-Type": "text/event-stream"});
 
-
+        var streamTxt = "";
         for await (const chunk of result.stream) {
             const data =  chunk.text() || "" ;
-            res.write(data);
+            streamTxt += data;
+            const formattedText = {
+              chatId: new_chat_id,
+              data: data
+          };
+          res.write(JSON.stringify(formattedText));
         }
 
+        console.log(`Streamed Text=> ${streamTxt}`);
+        chatHistory1.push({ "role": "model", "parts": streamTxt });
+        addOrUpdateChatHistory({chatId : new_chat_id, userId: userId, chatHistory: chatHistory1});
         res.end();
 
     } catch (error) {
@@ -57,6 +78,30 @@ const newChat = async (req, res, next) => {
     }
 }
 
+
+const addOrUpdateChatHistory = async ({chatId=null, userId,  chatHistory}) => {
+  if(chatId) {
+      const updatedGeminiSavedData = await geminiHistoryModel.findByIdAndUpdate(
+          chatId,
+          {
+              chatHistory: chatHistory,
+          }, {new: true}
+      );
+      if(!updatedGeminiSavedData) {
+          throw new Error("Chat history not found");
+      }
+      return updatedGeminiSavedData; 
+  } else {
+      //generate a heading here
+      const newGeminiSavedData = new geminiHistoryModel({
+          userId: userId,
+          chatHistory: chatHistory,
+          heading: `${new Date()}`
+      });
+      const savedChatGptData = await newGeminiSavedData.save();
+      return savedChatGptData;
+  }
+}
 
 //@desc Use to do dummy chat in the app
 //@route POST /chat/dummy-chat
