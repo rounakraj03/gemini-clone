@@ -37,28 +37,32 @@ class _ChatScreenState extends State<ChatScreen> {
   final unselectedImageSize = 30.0;
   final selectedPaddingSize = 10.0;
   final unselectedPaddingSize = 5.0;
-  String? chatId;
+  String? chatGptChatId;
+  String? geminiChatId;
 
   getGeminiChatResponse({required List<GeminiChatModel> messages}) async {
     try {
       var result = await chatRepository
           .getGeminiChatResponse(GeminiNewChatRequest(
+              userId: "65dc4685d23b1f44f89babb1",
+              chatId: geminiChatId,
               new_message: messages.last.parts,
               old_message: messages.sublist(0, messages.length - 1)))
           .listen((event) {
-        if (event == "") {
-          event = "\n\n";
-        } else {
-          event += "\n";
-        }
-        print("event : $event");
+        geminiChatId = event.chatId;
+        // if (event == "") {
+        //   event.data = "\n\n";
+        // } else {
+        //   event.data += "\n";
+        // }
+        // print("event : $event");
         scrollToBottom();
         setState(() {
           if (geminiChatModelList.last.role == "user") {
             geminiChatModelList
-                .add(GeminiChatModel(role: "model", parts: event));
+                .add(GeminiChatModel(role: "model", parts: event.data));
           } else {
-            geminiChatModelList.last.parts += event;
+            geminiChatModelList.last.parts += event.data;
           }
         });
       });
@@ -74,9 +78,9 @@ class _ChatScreenState extends State<ChatScreen> {
               new_message: "hi",
               old_message: messages,
               userId: "65dc4685d23b1f44f89babb1",
-              chatId: chatId))
+              chatId: chatGptChatId))
           .listen((event) {
-        chatId = event.chatId;
+        chatGptChatId = event.chatId;
         // if (event.data == "") {
         //   // event.data = "\n\n";
         //   event.data = "";

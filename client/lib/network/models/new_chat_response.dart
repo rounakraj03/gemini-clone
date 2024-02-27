@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-class ChatGPTNewChatResponse {
+class NewChatResponse {
   String data;
   String chatId;
-  ChatGPTNewChatResponse({
+  NewChatResponse({
     required this.data,
     required this.chatId,
   });
@@ -15,8 +15,8 @@ class ChatGPTNewChatResponse {
     };
   }
 
-  factory ChatGPTNewChatResponse.fromMap(Map<String, dynamic> map) {
-    return ChatGPTNewChatResponse(
+  factory NewChatResponse.fromMap(Map<String, dynamic> map) {
+    return NewChatResponse(
       data: map['data'] ?? '',
       chatId: map['chatId'] ?? '',
     );
@@ -24,5 +24,6 @@ class ChatGPTNewChatResponse {
 
   String toJson() => json.encode(toMap());
 
-  factory ChatGPTNewChatResponse.fromJson(String source) => ChatGPTNewChatResponse.fromMap(json.decode(source));
+  factory NewChatResponse.fromJson(String source) =>
+      NewChatResponse.fromMap(json.decode(source));
 }

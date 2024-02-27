@@ -19,7 +19,7 @@ class ChatRepository {
     print("Chat Repository Initialized");
   }
 
-  Stream<String> getGeminiChatResponse(
+  Stream<NewChatResponse> getGeminiChatResponse(
       GeminiNewChatRequest newChatRequest) async* {
     try {
       final apiUrl = baseUrl + geminiNewChatUrl;
@@ -34,33 +34,39 @@ class ChatRepository {
             "Content-Type": "application/json"
           }, responseType: ResponseType.stream));
 
-      StreamTransformer<Uint8List, List<int>> uint8Transformer =
-          StreamTransformer.fromHandlers(
-        handleData: (data, sink) {
-          sink.add(List<int>.from(data));
-        },
-      );
-
-      response.data?.stream
-          .transform(uint8Transformer)
-          .transform(const Utf8Decoder())
-          .transform(const LineSplitter())
-          .listen((event) {
-        try {
-          controller.add(event);
-        } catch (e) {
-          print("Error: $e");
-        }
-      });
-      await for (final value in controller.stream) {
-        yield value;
+      await for (final chunk in response.data.stream) {
+        final jsonString = utf8.decode(chunk);
+        final chatResponse = NewChatResponse.fromJson(jsonString);
+        yield chatResponse;
       }
+
+      // StreamTransformer<Uint8List, List<int>> uint8Transformer =
+      //     StreamTransformer.fromHandlers(
+      //   handleData: (data, sink) {
+      //     sink.add(List<int>.from(data));
+      //   },
+      // );
+
+      // response.data?.stream
+      //     .transform(uint8Transformer)
+      //     .transform(const Utf8Decoder())
+      //     .transform(const LineSplitter())
+      //     .listen((event) {
+      //   try {
+      //     controller.add(event);
+      //   } catch (e) {
+      //     print("Error: $e");
+      //   }
+      // });
+      // await for (final value in controller.stream) {
+      //   yield value;
+      // }
     } catch (e) {
       print("error : $e");
     }
   }
 
-  Stream<ChatGPTNewChatResponse> getChatGPTChatResponse(
+  Stream<NewChatResponse> getChatGPTChatResponse(
       ChatGPTNewChatRequest newChatRequest) async* {
     try {
       final apiUrl = baseUrl + chatGPTNewChatUrl;
@@ -79,7 +85,7 @@ class ChatRepository {
         final jsonString = utf8.decode(chunk);
         // final chatResponse =
         //     ChatGPTNewChatResponse.fromJson(json.decode(jsonString));
-        final chatResponse = ChatGPTNewChatResponse.fromJson(jsonString);
+        final chatResponse = NewChatResponse.fromJson(jsonString);
         yield chatResponse;
       }
 
