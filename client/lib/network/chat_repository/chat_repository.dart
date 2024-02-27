@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/models/new_chat_response.dart';
 import 'package:dio/dio.dart';
@@ -15,8 +16,41 @@ class ChatRepository {
   final geminiNewChatUrl = "gemini/new-chat";
   final chatGPTNewChatUrl = "chatgpt/new-chat";
 
+  final geminiChatHistory = "gemini/getGeminiHistory";
+  final chatGPTChatHistory = "chatgpt/getChatGptHistory";
+
   ChatRepository() {
     print("Chat Repository Initialized");
+  }
+
+  Future<List<GeminiDrawerResponse>> getGeminiDrawerData(
+      DrawerRequest drawerRequest) async {
+    try {
+      final apiUrl = baseUrl + geminiChatHistory;
+      final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
+      final List<dynamic> responseData = response.data;
+      final List<GeminiDrawerResponse> result = responseData
+          .map((data) => GeminiDrawerResponse.fromJson(data))
+          .toList();
+      return result;
+    } catch (e) {
+      print("error : $e");
+      throw e;
+    }
+  }
+
+  Future<List<ChatGPTDrawerResponse>> getChatGptDrawerData(
+      DrawerRequest drawerRequest) async {
+    try {
+      final apiUrl = baseUrl + chatGPTChatHistory;
+      final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
+      final List<dynamic> responseData = response.data;
+      final List<ChatGPTDrawerResponse> result = responseData.map((e) => ChatGPTDrawerResponse.fromJson(jsonEncode(responseData))).toList();
+      return result;
+    } catch (e) {
+      print("error : $e");
+      throw e;
+    }
   }
 
   Stream<NewChatResponse> getGeminiChatResponse(

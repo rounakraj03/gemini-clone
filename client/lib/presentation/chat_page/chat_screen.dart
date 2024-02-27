@@ -1,5 +1,6 @@
 import 'package:client/network/chat_repository/chat_repository.dart';
 import 'package:client/network/models/chat_model.dart';
+import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/res/app_colors.dart';
 import 'package:client/res/assets.dart';
@@ -39,6 +40,23 @@ class _ChatScreenState extends State<ChatScreen> {
   final unselectedPaddingSize = 5.0;
   String? chatGptChatId;
   String? geminiChatId;
+  List<ChatGPTDrawerResponse> chatgptDrawerData = [];
+  List<GeminiDrawerResponse> geminiDrawerData = [];
+
+  getDrawerData() async {
+    try {
+      final chatGptDrawerResult = await chatRepository.getChatGptDrawerData(
+          DrawerRequest(userId: "65dc4685d23b1f44f89babb1"));
+      final geminiDrawerResult = await chatRepository.getGeminiDrawerData(
+          DrawerRequest(userId: "65dc4685d23b1f44f89babb1"));
+      setState(() {
+        chatgptDrawerData = chatGptDrawerResult;
+        geminiDrawerData = geminiDrawerResult;
+      });
+    } catch (e) {
+      print("error: $e");
+    }
+  }
 
   getGeminiChatResponse({required List<GeminiChatModel> messages}) async {
     try {
@@ -116,6 +134,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    getDrawerData();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       scrollToBottom(); // Call scrollToBottom after the frame is rendered
     });
@@ -126,63 +145,62 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
         key: _scaffoldKey,
         drawer: Drawer(
-          child: ListView(
+          child: ListView.builder(
             padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: AppColors.scaffoldBgColor,
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: 80,
-                            width: 80,
-                            child: Image.asset(Assets.benLogo),
-                          ),
-                          SizedBox(
-                            height: 80,
-                            width: 80,
-                            child: IconButton(
-                              icon: const Icon(
-                                size: 30,
-                                Icons.power_settings_new_outlined,
-                                color: AppColors.desertStorm,
-                              ),
-                              onPressed: () {
-                                print("LogOut");
-                              },
+            itemCount: chatgptSelected
+                ? chatgptDrawerData.length + 1
+                : geminiDrawerData.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return DrawerHeader(
+                  decoration: const BoxDecoration(
+                    color: AppColors.scaffoldBgColor,
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: Image.asset(Assets.benLogo),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      const Text(
-                        "9315045029",
-                        style: TextStyle(
-                            color: AppColors.desertStorm, fontSize: 18),
-                      )
-                    ]),
-              ),
-              ListTile(
-                title: const Text('History 1'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('History2 '),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+                            SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: IconButton(
+                                icon: const Icon(
+                                  size: 30,
+                                  Icons.power_settings_new_outlined,
+                                  color: AppColors.desertStorm,
+                                ),
+                                onPressed: () {
+                                  print("LogOut");
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text(
+                          "9315045029",
+                          style: TextStyle(
+                              color: AppColors.desertStorm, fontSize: 18),
+                        )
+                      ]),
+                );
+              } else {
+                return ListTile(
+                    title: const Text('History 1'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    });
+              }
+            },
           ),
         ),
         body: Column(
