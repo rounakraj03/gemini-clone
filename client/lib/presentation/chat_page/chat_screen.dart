@@ -37,6 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final unselectedImageSize = 30.0;
   final selectedPaddingSize = 10.0;
   final unselectedPaddingSize = 5.0;
+  String? chatId;
 
   getGeminiChatResponse({required List<GeminiChatModel> messages}) async {
     try {
@@ -73,21 +74,24 @@ class _ChatScreenState extends State<ChatScreen> {
               new_message: "hi",
               old_message: messages,
               userId: "65dc4685d23b1f44f89babb1",
-              chatId: "65dce6373ec27f929b594195"))
+              chatId: chatId))
           .listen((event) {
-        if (event == "") {
-          event = "\n\n";
-        } else {
-          event += "\n";
-        }
-        print("event : $event");
+        chatId = event.chatId;
+        // if (event.data == "") {
+        //   // event.data = "\n\n";
+        //   event.data = "";
+        // } else {
+        //   // event.data += "\n";
+        //   event.data += "";
+        // }
+        // print("event : $event");
         scrollToBottom();
         setState(() {
           if (chatGPTChatModelList.last.role == "user") {
             chatGPTChatModelList
-                .add(ChatGPTChatModel(role: "assistant", content: event));
+                .add(ChatGPTChatModel(role: "assistant", content: event.data));
           } else {
-            chatGPTChatModelList.last.content += event;
+            chatGPTChatModelList.last.content += event.data;
           }
         });
       });

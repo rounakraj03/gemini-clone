@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:client/network/models/new_chat_request.dart';
+import 'package:client/network/models/new_chat_response.dart';
 import 'package:dio/dio.dart';
 
 class ChatRepository {
@@ -59,7 +60,7 @@ class ChatRepository {
     }
   }
 
-  Stream<String> getChatGPTChatResponse(
+  Stream<ChatGPTNewChatResponse> getChatGPTChatResponse(
       ChatGPTNewChatRequest newChatRequest) async* {
     try {
       final apiUrl = baseUrl + chatGPTNewChatUrl;
@@ -74,27 +75,35 @@ class ChatRepository {
             "Content-Type": "application/json"
           }, responseType: ResponseType.stream));
 
-      StreamTransformer<Uint8List, List<int>> uint8Transformer =
-          StreamTransformer.fromHandlers(
-        handleData: (data, sink) {
-          sink.add(List<int>.from(data));
-        },
-      );
-
-      response.data?.stream
-          .transform(uint8Transformer)
-          .transform(const Utf8Decoder())
-          .transform(const LineSplitter())
-          .listen((event) {
-        try {
-          controller.add(event);
-        } catch (e) {
-          print("Error: $e");
-        }
-      });
-      await for (final value in controller.stream) {
-        yield value;
+      await for (final chunk in response.data.stream) {
+        final jsonString = utf8.decode(chunk);
+        // final chatResponse =
+        //     ChatGPTNewChatResponse.fromJson(json.decode(jsonString));
+        final chatResponse = ChatGPTNewChatResponse.fromJson(jsonString);
+        yield chatResponse;
       }
+
+      // StreamTransformer<Uint8List, List<int>> uint8Transformer =
+      //     StreamTransformer.fromHandlers(
+      //   handleData: (data, sink) {
+      //     sink.add(List<int>.from(data));
+      //   },
+      // );
+
+      // response.data?.stream
+      //     .transform(uint8Transformer)
+      //     .transform(const Utf8Decoder())
+      //     .transform(const LineSplitter())
+      //     .listen((event) {
+      //   try {
+      //     controller.add(event);
+      //   } catch (e) {
+      //     print("Error: $e");
+      //   }
+      // });
+      // await for (final value in controller.stream) {
+      //   yield value;
+      // }
     } catch (e) {
       print("error : $e");
     }
