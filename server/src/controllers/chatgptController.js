@@ -81,7 +81,7 @@ const addOrUpdateChatHistory = async ({chatId=null, userId,  chatHistory}) => {
         const newChatGptSavedData = new chatGPThistoryModel({
             userId: userId,
             chatHistory: chatHistory,
-            heading: `${new Date()}`
+            heading:  (chatHistory.length > 2) ? `${chatHistory[2]["content"]}` :`${new Date()}`
         });
         const savedChatGptData = await newChatGptSavedData.save();
         return savedChatGptData;

@@ -96,7 +96,7 @@ const addOrUpdateChatHistory = async ({chatId=null, userId,  chatHistory}) => {
       const newGeminiSavedData = new geminiHistoryModel({
           userId: userId,
           chatHistory: chatHistory,
-          heading: `${new Date()}`
+          heading: (chatHistory.length > 2) ? `${chatHistory[2]["parts"]}` :`${new Date()}`
       });
       const savedChatGptData = await newGeminiSavedData.save();
       return savedChatGptData;

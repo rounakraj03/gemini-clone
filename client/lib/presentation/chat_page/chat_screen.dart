@@ -152,46 +152,78 @@ class _ChatScreenState extends State<ChatScreen> {
                 : geminiDrawerData.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return DrawerHeader(
-                  decoration: const BoxDecoration(
-                    color: AppColors.scaffoldBgColor,
-                  ),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                return Column(
+                  children: [
+                    DrawerHeader(
+                      decoration: const BoxDecoration(
+                        color: AppColors.scaffoldBgColor,
+                      ),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: 80,
-                              width: 80,
-                              child: Image.asset(Assets.benLogo),
-                            ),
-                            SizedBox(
-                              height: 80,
-                              width: 80,
-                              child: IconButton(
-                                icon: const Icon(
-                                  size: 30,
-                                  Icons.power_settings_new_outlined,
-                                  color: AppColors.desertStorm,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: Image.asset(Assets.benLogo),
                                 ),
-                                onPressed: () {
-                                  print("LogOut");
-                                },
-                              ),
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      size: 30,
+                                      Icons.power_settings_new_outlined,
+                                      color: AppColors.desertStorm,
+                                    ),
+                                    onPressed: () {
+                                      print("LogOut");
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        const Text(
-                          "rounakraj@gmail.com",
-                          style: TextStyle(
-                              color: AppColors.desertStorm, fontSize: 18),
-                        )
-                      ]),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            const Text(
+                              "rounakraj@gmail.com",
+                              style: TextStyle(
+                                  color: AppColors.desertStorm, fontSize: 18),
+                            )
+                          ]),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.add_circle_outline),
+                      title: Text("New Chat"),
+                      onTap: () {
+                        setState(() {
+                          if (chatgptSelected) {
+                            chatGptChatId = null;
+                            chatGPTChatModelList = [
+                              ChatGPTChatModel(role: 'user', content: "Hi"),
+                              ChatGPTChatModel(
+                                  role: 'assistant',
+                                  content: "Hi, How can I help you today"),
+                            ];
+                            print("chatgptchatId=> ${chatGptChatId}");
+                          } else {
+                            geminiChatId = null;
+                            geminiChatModelList = [
+                              GeminiChatModel(role: 'user', parts: "Hi"),
+                              GeminiChatModel(
+                                  role: 'model',
+                                  parts: "Hi, How can I help you today"),
+                            ];
+                            print("geminichatId=> ${geminiChatId}");
+                          }
+                          Navigator.of(context).pop();
+                        });
+                      },
+                    )
+                  ],
                 );
               } else {
                 return ListTile(
@@ -199,6 +231,18 @@ class _ChatScreenState extends State<ChatScreen> {
                         ? Text(chatgptDrawerData[index - 1].heading)
                         : Text(geminiDrawerData[index - 1].heading),
                     onTap: () {
+                      print(chatgptDrawerData[index - 1].id);
+                      setState(() {
+                        if (chatgptSelected) {
+                          chatGptChatId = chatgptDrawerData[index - 1].id;
+                          chatGPTChatModelList =
+                              chatgptDrawerData[index - 1].chatHistory;
+                        } else {
+                          geminiChatId = geminiDrawerData[index - 1].id;
+                          geminiChatModelList =
+                              geminiDrawerData[index - 1].chatHistory;
+                        }
+                      });
                       Navigator.pop(context);
                     });
               }
@@ -216,6 +260,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     onTapDown: (details) {
                       setState(() {
                         chatgptSelected = true;
+                        print("chatgptchatId=> ${chatGptChatId}");
                       });
                     },
                     child: Column(
@@ -259,6 +304,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     onTapDown: (details) {
                       setState(() {
                         chatgptSelected = false;
+                        print("geminichatId=> ${geminiChatId}");
                       });
                     },
                     child: Column(
