@@ -1,4 +1,6 @@
 import 'package:client/presentation/chat_page/chat_screen.dart';
+import 'package:client/presentation/login_page/login_page.dart';
+import 'package:client/res/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,13 +14,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Rounak AI',
+      debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: scaffoldMessenger.scaffoldMessengerKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: const MyHomePage(),
-      home: const ChatScreen(),
+      // home: const ChatScreen(),
+      home: LoginScreen(),
     );
   }
 }
