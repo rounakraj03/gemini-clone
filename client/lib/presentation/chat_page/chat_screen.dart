@@ -353,6 +353,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   onPressed: () {
                     print("Drawer");
+                    getDrawerData();
                     _scaffoldKey.currentState?.openDrawer();
                   },
                 ),
@@ -409,7 +410,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   if (chatgptSelected) {
                                     chatGPTChatModelList.add(ChatGPTChatModel(
                                         role: 'user',
-                                        content: textController.text));
+                                        content: textController.text.trim()));
                                     textController.clear();
                                     FocusScope.of(context).unfocus();
                                     getChatGPTChatResponse(
@@ -417,7 +418,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   } else {
                                     geminiChatModelList.add(GeminiChatModel(
                                         role: 'user',
-                                        parts: textController.text));
+                                        parts: textController.text.trim()));
                                     textController.clear();
                                     FocusScope.of(context).unfocus();
                                     getGeminiChatResponse(
