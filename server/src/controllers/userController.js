@@ -25,6 +25,7 @@ const login = async (req, res, next) => {
         }
 
     } catch (error) {
+        res.status(406);
      next(error);
     }
 }
@@ -48,6 +49,7 @@ const signup = async (req, res, next) => {
         const savedUser = await user.save();
         res.status(200).json(savedUser);
     } catch (error) {
+        res.status(406);
         console.log(`Error:> ${error}`);
         next(error);
     }

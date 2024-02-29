@@ -59,6 +59,7 @@ const newChat = async (req, res, next) => {
         addOrUpdateChatHistory({chatId : new_chat_id, userId: userId, chatHistory: chatHistory});
         res.end();
     } catch (error) {
+        res.status(406);
      next(error);
     }
 }
@@ -105,6 +106,7 @@ const getChatGptHistory = async (req, res, next) => {
 
 
     } catch (error) {
+        res.status(406);
         console.log(`Error:> ${error}`);
         next(error);
     }
@@ -145,6 +147,7 @@ const addChatGptHistory = async (req, res, next) => {
             res.status(200).json(savedChatGptData);
         }
     } catch (error) {
+        res.status(406);
         console.log(`Error: ${error}`);
         next(error);
     }

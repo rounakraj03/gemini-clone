@@ -116,6 +116,7 @@ const dummyChat = async (req, res, next) => {
         run(req, res);
 
     } catch (error) {
+      res.status(406);
      next(error);
     }
 }
@@ -164,6 +165,7 @@ const getGeminiHistory = async (req, res, next) => {
     const userChat = await geminiHistoryModel.find({userId : userId}).sort({updatedAt : -1});
     res.status(200).json(userChat);
 } catch (error) {
+  res.status(406);
     console.log(`Error:> ${error}`);
     next(error);
 }
@@ -189,6 +191,7 @@ const addGeminiHistory = async (req, res, next) => {
       const savedUser = await user.save();
       res.status(200).json(savedUser);
   } catch (error) {
+    res.status(406);
       console.log(`Error:> ${error}`);
       next(error);
   }
