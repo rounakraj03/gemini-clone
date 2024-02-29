@@ -1,6 +1,5 @@
-import 'package:client/presentation/chat_page/chat_screen.dart';
 import 'package:client/presentation/login_page/login_page.dart';
-import 'package:client/res/snack_bar.dart';
+import 'package:client/core/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 void main() {

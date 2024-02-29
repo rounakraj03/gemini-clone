@@ -4,3 +4,7 @@ class Assets {
   static const String chatGPTLogo = "assets/icons/chatgpt.jpg";
   static const String chatGPTLogo2 = "assets/icons/chatgpt-2.png";
 }
+
+class StaticVariables {
+  static const String userId = "userId";
+}

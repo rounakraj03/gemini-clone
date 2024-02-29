@@ -1,20 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
-
+import 'package:client/core/secure_shared_preference.dart';
 import 'package:client/network/models/drawer_request_response.dart';
+import 'package:client/network/models/login_signUp_response_model.dart';
+import 'package:client/network/models/login_signup_request_model.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/models/new_chat_response.dart';
+import 'package:client/network/network_response/network_error.dart';
 import 'package:dio/dio.dart';
+import 'package:encrypt/encrypt.dart';
 
 class ChatRepository {
   Dio _dio = Dio();
+  ApiErrorHandler apiErrorHandler = ApiErrorHandler();
+  SecuredSharedPreference securedSharedPreference = SecuredSharedPreference();
   // final baseUrl = "http://192.168.2.192:5001/";
   // final baseUrl = "http://192.168.29.234:8002/";
   final baseUrl = "http://35.154.226.55:8080/";
 
   final geminiNewChatUrl = "gemini/new-chat";
   final chatGPTNewChatUrl = "chatgpt/new-chat";
+  final loginUrl = "user/login";
+  final signupUrl = "user/signup";
 
   final geminiChatHistory = "gemini/getGeminiHistory";
   final chatGPTChatHistory = "chatgpt/getChatGptHistory";
@@ -33,6 +40,7 @@ class ChatRepository {
       return result;
     } catch (e) {
       print("error : $e");
+      apiErrorHandler.handleError(e);
       throw e;
     }
   }
@@ -49,6 +57,7 @@ class ChatRepository {
       return result;
     } catch (e) {
       print("error : $e");
+      apiErrorHandler.handleError(e);
       throw e;
     }
   }
@@ -74,6 +83,7 @@ class ChatRepository {
         yield chatResponse;
       }
     } catch (e) {
+      apiErrorHandler.handleError(e);
       print("error : $e");
     }
   }
@@ -101,7 +111,51 @@ class ChatRepository {
         yield chatResponse;
       }
     } catch (e) {
+      apiErrorHandler.handleError(e);
       print("error : $e");
     }
+  }
+
+  Future<LoginSignUpResponse> login(
+      {required String email, required String password}) async {
+    try {
+      final apiUrl = baseUrl + loginUrl;
+      final response = await _dio.post(apiUrl,
+          data: LoginSignUpRequest(email: email, password: password).toJson());
+      final result = LoginSignUpResponse.fromMap(response.data);
+      return result;
+    } catch (e) {
+      print("error: $e");
+      apiErrorHandler.handleError(e);
+      throw e;
+    }
+  }
+
+  Future<LoginSignUpResponse> signup(
+      {required String email, required String password}) async {
+    try {
+      final apiUrl = baseUrl + signupUrl;
+      final response = await _dio.post(apiUrl,
+          data: LoginSignUpRequest(email: email, password: password).toJson());
+      print("response.data + ${response.data["status"]}");
+      if (response.data["status"] == 400) {
+        throw response.data["errorMessage"];
+      }
+      final result = LoginSignUpResponse.fromMap(response.data);
+      return result;
+    } catch (e) {
+      print("error: $e");
+      apiErrorHandler.handleError(e);
+      throw e;
+    }
+  }
+
+  Future<void> saveUserId(String value) async {
+    await securedSharedPreference.secureSetString("userId", value);
+  }
+
+  Future<String> getUserId() async {
+    final value = await securedSharedPreference.secureGetString("userId");
+    return value;
   }
 }

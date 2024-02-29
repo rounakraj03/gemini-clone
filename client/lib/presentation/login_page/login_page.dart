@@ -1,5 +1,7 @@
+import 'package:client/network/chat_repository/chat_repository.dart';
+import 'package:client/presentation/chat_page/chat_screen.dart';
 import 'package:client/res/app_colors.dart';
-import 'package:client/res/snack_bar.dart';
+import 'package:client/core/snack_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +15,33 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  ChatRepository chatRepository = ChatRepository();
 
   bool isLoginSelected = true;
+
+  login(
+      {required String email,
+      required String password,
+      required void Function(String userId) onSuccess,
+      required bool isSignUp}) async {
+    if (isSignUp) {
+      final loginInfo =
+          await chatRepository.signup(email: email, password: password);
+      print("signUp userId =  ${loginInfo.id}");
+      if (loginInfo.id != "") {
+        chatRepository.saveUserId(loginInfo.id);
+        onSuccess(loginInfo.id);
+      }
+    } else {
+      final loginInfo =
+          await chatRepository.login(email: email, password: password);
+      print("login userId =  ${loginInfo.id}");
+      if (loginInfo.id != "") {
+        chatRepository.saveUserId(loginInfo.id);
+        onSuccess(loginInfo.id);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -89,14 +116,43 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      scaffoldMessenger.showSnackBar(
-                          text: isLoginSelected
-                              ? "Logging in..."
-                              : "Signing up...");
-                      if (isLoginSelected) {
-                        print("Login Clicked");
+                      if (emailController.text.isEmpty ||
+                          passwordController.text.isEmpty) {
+                        scaffoldMessenger.showSnackBar(
+                            text: isLoginSelected
+                                ? "Logging in..."
+                                : "Signing up...");
                       } else {
-                        print("SignUp Clicked");
+                        String email = emailController.text.trim();
+                        email = email.toLowerCase();
+                        String password = passwordController.text.trim();
+                        setState(() {
+                          emailController.clear();
+                          passwordController.clear();
+                          if (isLoginSelected) {
+                            print("Login Clicked");
+                            login(
+                              isSignUp: false,
+                              email: email,
+                              password: password,
+                              onSuccess: (userId) =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ChatScreen(),
+                              )),
+                            );
+                          } else {
+                            print("SignUp Clicked");
+                            login(
+                              isSignUp: true,
+                              email: email,
+                              password: password,
+                              onSuccess: (userId) =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ChatScreen(),
+                              )),
+                            );
+                          }
+                        });
                       }
                     },
                     style: ButtonStyle(
