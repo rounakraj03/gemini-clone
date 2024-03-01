@@ -4,5 +4,7 @@ part 'login_state.freezed.dart';
 
 @freezed
 class LoginState with _$LoginState {
-  factory LoginState() = _LoginState;
+  factory LoginState({
+    @Default(true) bool isLoginSelected,
+  }) = _LoginState;
 }

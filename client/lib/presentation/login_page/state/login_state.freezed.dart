@@ -15,13 +15,21 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$LoginState {}
+mixin _$LoginState {
+  bool get isLoginSelected => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $LoginStateCopyWith<LoginState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
 
 /// @nodoc
 abstract class $LoginStateCopyWith<$Res> {
   factory $LoginStateCopyWith(
           LoginState value, $Res Function(LoginState) then) =
       _$LoginStateCopyWithImpl<$Res, LoginState>;
+  @useResult
+  $Res call({bool isLoginSelected});
 }
 
 /// @nodoc
@@ -33,13 +41,30 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? isLoginSelected = null,
+  }) {
+    return _then(_value.copyWith(
+      isLoginSelected: null == isLoginSelected
+          ? _value.isLoginSelected
+          : isLoginSelected // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-abstract class _$$LoginStateImplCopyWith<$Res> {
+abstract class _$$LoginStateImplCopyWith<$Res>
+    implements $LoginStateCopyWith<$Res> {
   factory _$$LoginStateImplCopyWith(
           _$LoginStateImpl value, $Res Function(_$LoginStateImpl) then) =
       __$$LoginStateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({bool isLoginSelected});
 }
 
 /// @nodoc
@@ -49,28 +74,61 @@ class __$$LoginStateImplCopyWithImpl<$Res>
   __$$LoginStateImplCopyWithImpl(
       _$LoginStateImpl _value, $Res Function(_$LoginStateImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? isLoginSelected = null,
+  }) {
+    return _then(_$LoginStateImpl(
+      isLoginSelected: null == isLoginSelected
+          ? _value.isLoginSelected
+          : isLoginSelected // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$LoginStateImpl implements _LoginState {
-  _$LoginStateImpl();
+  _$LoginStateImpl({this.isLoginSelected = true});
+
+  @override
+  @JsonKey()
+  final bool isLoginSelected;
 
   @override
   String toString() {
-    return 'LoginState()';
+    return 'LoginState(isLoginSelected: $isLoginSelected)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoginStateImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$LoginStateImpl &&
+            (identical(other.isLoginSelected, isLoginSelected) ||
+                other.isLoginSelected == isLoginSelected));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, isLoginSelected);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith =>
+      __$$LoginStateImplCopyWithImpl<_$LoginStateImpl>(this, _$identity);
 }
 
 abstract class _LoginState implements LoginState {
-  factory _LoginState() = _$LoginStateImpl;
+  factory _LoginState({final bool isLoginSelected}) = _$LoginStateImpl;
+
+  @override
+  bool get isLoginSelected;
+  @override
+  @JsonKey(ignore: true)
+  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

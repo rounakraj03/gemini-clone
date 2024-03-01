@@ -1,8 +1,11 @@
-import 'package:client/presentation/login_page/login_page.dart';
+import 'package:client/di/di.dart';
+import 'package:client/presentation/login_page/view/login_screen.dart';
 import 'package:client/core/snack_bar.dart';
+import 'package:client/routes/router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  configureDependencies();
   runApp(const MyApp());
 }
 
@@ -16,12 +19,14 @@ class MyApp extends StatelessWidget {
       title: 'Rounak AI',
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: scaffoldMessenger.scaffoldMessengerKey,
+      initialRoute: NavigationHandler.initalRoute,
+      onGenerateRoute: NavigationHandler.onGenerate,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       // home: const ChatScreen(),
-      home: LoginScreen(),
+      home: const LoginScreen(),
     );
   }
 }

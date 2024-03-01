@@ -7,10 +7,12 @@ import 'package:client/network/models/login_signup_request_model.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/models/new_chat_response.dart';
 import 'package:client/network/network_response/network_error.dart';
+import 'package:client/network/repository/chat_repository.dart';
 import 'package:dio/dio.dart';
-import 'package:encrypt/encrypt.dart';
+import 'package:injectable/injectable.dart';
 
-class ChatRepository {
+@Injectable(as: ChatRepository)
+class ChatRepositoryImpl extends ChatRepository {
   Dio _dio = Dio();
   ApiErrorHandler apiErrorHandler = ApiErrorHandler();
   SecuredSharedPreference securedSharedPreference = SecuredSharedPreference();
