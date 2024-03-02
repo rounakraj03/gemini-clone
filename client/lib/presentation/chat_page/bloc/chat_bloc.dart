@@ -4,16 +4,28 @@ import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/repository/chat_repository.dart';
 import 'package:client/presentation/chat_page/state/chat_state.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class ChatBloc extends Cubit<ChatState> {
   ChatRepository chatRepository;
   ChatBloc(this.chatRepository) : super(ChatState());
+  final ScrollController scrollController = ScrollController();
 
   initialize() {
     setDefaultGeminiChatModelList();
     setDefaultChatGptModelList();
+  }
+
+  void scrollToBottom({bool stopScrolling = false}) {
+    if (!stopScrolling) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   void setDefaultGeminiChatModelList() {
@@ -78,15 +90,18 @@ class ChatBloc extends Cubit<ChatState> {
             .listen((event) {
           print("e=> ${event.data}");
           emit(state.copyWith(geminiChatId: event.chatId));
-          // scrollToBottom();
           if (state.geminiChatModelList.last.role == "user") {
             List<GeminiChatModel> tempList = List.of(state.geminiChatModelList);
             tempList.add(GeminiChatModel(role: "model", parts: event.data));
-            emit(state.copyWith(geminiChatModelList: tempList));
+            updateGeminiModelList(tempList);
+            scrollToBottom();
+            // emit(state.copyWith(geminiChatModelList: tempList));
           } else {
             List<GeminiChatModel> tempList = List.of(state.geminiChatModelList);
             tempList.last.parts += event.data;
-            emit(state.copyWith(geminiChatModelList: tempList));
+            updateGeminiModelList(tempList);
+            scrollToBottom();
+            // emit(state.copyWith(geminiChatModelList: tempList));
           }
         });
       }
@@ -114,13 +129,16 @@ class ChatBloc extends Cubit<ChatState> {
           if (state.chatGPTChatModelList.last.role == "user") {
             List<ChatGPTChatModel> tempList =
                 List.of(state.chatGPTChatModelList);
-            tempList.add(ChatGPTChatModel(role: "assistant", content: event.data));
-            emit(state.copyWith(chatGPTChatModelList: tempList));
+            tempList
+                .add(ChatGPTChatModel(role: "assistant", content: event.data));
+            // emit(state.copyWith(chatGPTChatModelList: tempList));
+            updateChatGPTmodelList(tempList);
           } else {
             List<ChatGPTChatModel> tempList =
                 List.of(state.chatGPTChatModelList);
             tempList.last.content += event.data;
-            emit(state.copyWith(chatGPTChatModelList: tempList));
+            // emit(state.copyWith(chatGPTChatModelList: tempList));
+            updateChatGPTmodelList(tempList);
           }
         });
       }

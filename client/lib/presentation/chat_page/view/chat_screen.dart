@@ -21,7 +21,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  late ScrollController _scrollController;
   final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(); // Add a GlobalKey
 
@@ -32,34 +31,24 @@ class _ChatScreenState extends State<ChatScreen> {
   final selectedPaddingSize = 10.0;
   final unselectedPaddingSize = 5.0;
 
-  void scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-  }
+ 
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     chatBloc.initialize();
     chatBloc.getDrawerData();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      scrollToBottom(); // Call scrollToBottom after the frame is rendered
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: chatBloc,
-      child: Scaffold(
-          key: _scaffoldKey,
-          drawer: BlocBuilder<ChatBloc, ChatState>(
-            builder: (context, state) {
-              return Drawer(
+      child: BlocBuilder<ChatBloc, ChatState>(
+        builder: (context, state) {
+          return Scaffold(
+              key: _scaffoldKey,
+              drawer: Drawer(
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: state.chatgptSelected
@@ -155,12 +144,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     }
                   },
                 ),
-              );
-            },
-          ),
-          body: BlocBuilder<ChatBloc, ChatState>(
-            builder: (context, state) {
-              return Column(
+              ),
+              body: Column(
                 children: [
                   CustomAppBar(
                       customAppBarAttribute: CustomAppBarAttribute(
@@ -258,7 +243,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           color: AppColors.desertStorm,
                         ),
                         onPressed: () {
-                          print("Drawer");
                           chatBloc.getDrawerData();
                           _scaffoldKey.currentState?.openDrawer();
                         },
@@ -274,7 +258,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ? BlocBuilder<ChatBloc, ChatState>(
                                       builder: (context, state) {
                                         return ListView.separated(
-                                          controller: _scrollController,
+                                          controller: chatBloc.scrollController,
                                           itemBuilder: (context, index) =>
                                               ChatGPTchatBubble(
                                                   chatModel: state
@@ -290,7 +274,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   : BlocBuilder<ChatBloc, ChatState>(
                                       builder: (context, state) {
                                         return ListView.separated(
-                                          controller: _scrollController,
+                                          controller: chatBloc.scrollController,
                                           itemBuilder: (context, index) =>
                                               GeminiChatBubble(
                                                   chatModel:
@@ -328,7 +312,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   onPressed: () {
                                     if (textController.text.isNotEmpty) {
                                       setState(() {
-                                        scrollToBottom();
+                                        chatBloc.scrollToBottom();
                                         if (state.chatgptSelected) {
                                           List<ChatGPTChatModel> tempList =
                                               List.of(
@@ -384,9 +368,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ],
-              );
-            },
-          )),
+              ));
+        },
+      ),
     );
   }
 }
