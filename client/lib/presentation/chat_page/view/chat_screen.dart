@@ -21,16 +21,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // final GlobalKey<ScaffoldState> _scaffoldKey =
-  //     GlobalKey<ScaffoldState>(); // Add a GlobalKey
-
-  final textController = TextEditingController();
-
-  final selectedImageSize = 40.0;
-  final unselectedImageSize = 30.0;
-  final selectedPaddingSize = 10.0;
-  final unselectedPaddingSize = 5.0;
-
   @override
   void initState() {
     super.initState();
@@ -92,79 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           );
                                         },
                                       )),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: textController,
-                                    maxLines: 6,
-                                    minLines: 1,
-                                    cursorColor: AppColors.scaffoldBgColor,
-                                    decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 12),
-                                        hintText: "Ask Anything...",
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20))),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      if (textController.text.isNotEmpty) {
-                                        setState(() {
-                                          chatBloc.scrollToBottom();
-                                          if (state.chatgptSelected) {
-                                            List<ChatGPTChatModel> tempList =
-                                                List.of(
-                                                    state.chatGPTChatModelList);
-                                            tempList.add(ChatGPTChatModel(
-                                                role: 'user',
-                                                content: textController.text
-                                                    .trim()));
-                                            chatBloc.updateChatGPTmodelList(
-                                                tempList);
-
-                                            textController.clear();
-                                            FocusScope.of(context).unfocus();
-                                            chatBloc.getChatGPTChatResponse(
-                                                messages: tempList);
-                                          } else {
-                                            List<GeminiChatModel> tempList =
-                                                List.of(
-                                                    state.geminiChatModelList);
-                                            tempList.add(GeminiChatModel(
-                                                role: 'user',
-                                                parts: textController.text
-                                                    .trim()));
-                                            chatBloc.updateGeminiModelList(
-                                                tempList);
-                                            textController.clear();
-                                            FocusScope.of(context).unfocus();
-                                            chatBloc.getGeminiChatResponse(
-                                                messages: tempList);
-                                          }
-                                        });
-                                      }
-                                    },
-                                    icon: Container(
-                                      decoration: BoxDecoration(
-                                          color: AppColors.scaffoldBgColor,
-                                          borderRadius:
-                                              BorderRadius.circular(30)),
-                                      height: 50,
-                                      width: 50,
-                                      child: const Icon(
-                                        Icons.send,
-                                        color: AppColors.desertStorm,
-                                      ),
-                                    )),
-                              ],
-                            ),
+                            CustomTextFieldRow(),
                             const SizedBox(
                               height: 0,
                             )
@@ -401,6 +319,85 @@ class AppBarWidget extends StatelessWidget {
           ),
         )));
       },
+    );
+  }
+}
+
+class CustomTextFieldRow extends StatefulWidget {
+  CustomTextFieldRow({super.key});
+
+  @override
+  State<CustomTextFieldRow> createState() => _CustomTextFieldRowState();
+}
+
+class _CustomTextFieldRowState extends State<CustomTextFieldRow> {
+  final textController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: textController,
+            maxLines: 6,
+            minLines: 1,
+            cursorColor: AppColors.scaffoldBgColor,
+            decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                hintText: "Ask Anything...",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20))),
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        BlocBuilder<ChatBloc, ChatState>(
+          builder: (context, state) {
+            return IconButton(
+                onPressed: () {
+                  if (textController.text.isNotEmpty) {
+                    setState(() {
+                      chatBloc.scrollToBottom();
+                      if (state.chatgptSelected) {
+                        List<ChatGPTChatModel> tempList =
+                            List.of(state.chatGPTChatModelList);
+                        tempList.add(ChatGPTChatModel(
+                            role: 'user', content: textController.text.trim()));
+                        chatBloc.updateChatGPTmodelList(tempList);
+
+                        textController.clear();
+                        FocusScope.of(context).unfocus();
+                        chatBloc.getChatGPTChatResponse(messages: tempList);
+                      } else {
+                        List<GeminiChatModel> tempList =
+                            List.of(state.geminiChatModelList);
+                        tempList.add(GeminiChatModel(
+                            role: 'user', parts: textController.text.trim()));
+                        chatBloc.updateGeminiModelList(tempList);
+                        textController.clear();
+                        FocusScope.of(context).unfocus();
+                        chatBloc.getGeminiChatResponse(messages: tempList);
+                      }
+                    });
+                  }
+                },
+                icon: Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.scaffoldBgColor,
+                      borderRadius: BorderRadius.circular(30)),
+                  height: 50,
+                  width: 50,
+                  child: const Icon(
+                    Icons.send,
+                    color: AppColors.desertStorm,
+                  ),
+                ));
+          },
+        ),
+      ],
     );
   }
 }
