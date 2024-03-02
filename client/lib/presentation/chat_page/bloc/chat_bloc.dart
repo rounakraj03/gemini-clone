@@ -12,6 +12,7 @@ class ChatBloc extends Cubit<ChatState> {
   ChatRepository chatRepository;
   ChatBloc(this.chatRepository) : super(ChatState());
   final ScrollController scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   initialize() {
     setDefaultGeminiChatModelList();
