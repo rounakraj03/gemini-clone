@@ -99,8 +99,12 @@ class ChatBloc extends Cubit<ChatState> {
             // emit(state.copyWith(geminiChatModelList: tempList));
           } else {
             List<GeminiChatModel> tempList = List.of(state.geminiChatModelList);
-            tempList.last.parts += event.data;
-            updateGeminiModelList(tempList);
+            String tempLastParts = tempList.last.parts;
+            tempLastParts = tempLastParts + event.data;
+            List<GeminiChatModel> tempList2 =
+                tempList.sublist(0, tempList.length - 1);
+            tempList2.add(GeminiChatModel(role: "model", parts: tempLastParts));
+            updateGeminiModelList(tempList2);
             scrollToBottom();
             // emit(state.copyWith(geminiChatModelList: tempList));
           }
@@ -126,20 +130,25 @@ class ChatBloc extends Cubit<ChatState> {
             .listen((event) {
           print("e=> ${event.data}");
           emit(state.copyWith(chatGptChatId: event.chatId));
-          // scrollToBottom();
           if (state.chatGPTChatModelList.last.role == "user") {
             List<ChatGPTChatModel> tempList =
                 List.of(state.chatGPTChatModelList);
             tempList
                 .add(ChatGPTChatModel(role: "assistant", content: event.data));
-            // emit(state.copyWith(chatGPTChatModelList: tempList));
             updateChatGPTmodelList(tempList);
+            scrollToBottom();
           } else {
+            //
             List<ChatGPTChatModel> tempList =
                 List.of(state.chatGPTChatModelList);
-            tempList.last.content += event.data;
-            // emit(state.copyWith(chatGPTChatModelList: tempList));
-            updateChatGPTmodelList(tempList);
+            String tempLastParts = tempList.last.content;
+            tempLastParts = tempLastParts + event.data;
+            List<ChatGPTChatModel> tempList2 =
+                tempList.sublist(0, tempList.length - 1);
+            tempList2.add(
+                ChatGPTChatModel(role: "assistant", content: tempLastParts));
+            updateChatGPTmodelList(tempList2);
+            scrollToBottom();
           }
         });
       }
