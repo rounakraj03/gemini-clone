@@ -114,7 +114,7 @@ class ChatBloc extends Cubit<ChatState> {
           if (state.chatGPTChatModelList.last.role == "user") {
             List<ChatGPTChatModel> tempList =
                 List.of(state.chatGPTChatModelList);
-            tempList.add(ChatGPTChatModel(role: "model", content: event.data));
+            tempList.add(ChatGPTChatModel(role: "assistant", content: event.data));
             emit(state.copyWith(chatGPTChatModelList: tempList));
           } else {
             List<ChatGPTChatModel> tempList =
