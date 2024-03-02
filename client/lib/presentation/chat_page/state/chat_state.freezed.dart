@@ -24,7 +24,6 @@ mixin _$ChatState {
       throw _privateConstructorUsedError;
   List<ChatGPTChatModel> get chatGPTChatModelList =>
       throw _privateConstructorUsedError;
-  List<int> get intList => throw _privateConstructorUsedError;
   bool get chatgptSelected => throw _privateConstructorUsedError;
   String? get chatGptChatId => throw _privateConstructorUsedError;
   String? get geminiChatId => throw _privateConstructorUsedError;
@@ -44,7 +43,6 @@ abstract class $ChatStateCopyWith<$Res> {
       List<GeminiDrawerResponse> geminiDrawerData,
       List<GeminiChatModel> geminiChatModelList,
       List<ChatGPTChatModel> chatGPTChatModelList,
-      List<int> intList,
       bool chatgptSelected,
       String? chatGptChatId,
       String? geminiChatId});
@@ -67,7 +65,6 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? geminiDrawerData = null,
     Object? geminiChatModelList = null,
     Object? chatGPTChatModelList = null,
-    Object? intList = null,
     Object? chatgptSelected = null,
     Object? chatGptChatId = freezed,
     Object? geminiChatId = freezed,
@@ -89,10 +86,6 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
           ? _value.chatGPTChatModelList
           : chatGPTChatModelList // ignore: cast_nullable_to_non_nullable
               as List<ChatGPTChatModel>,
-      intList: null == intList
-          ? _value.intList
-          : intList // ignore: cast_nullable_to_non_nullable
-              as List<int>,
       chatgptSelected: null == chatgptSelected
           ? _value.chatgptSelected
           : chatgptSelected // ignore: cast_nullable_to_non_nullable
@@ -122,7 +115,6 @@ abstract class _$$ChatStateImplCopyWith<$Res>
       List<GeminiDrawerResponse> geminiDrawerData,
       List<GeminiChatModel> geminiChatModelList,
       List<ChatGPTChatModel> chatGPTChatModelList,
-      List<int> intList,
       bool chatgptSelected,
       String? chatGptChatId,
       String? geminiChatId});
@@ -143,7 +135,6 @@ class __$$ChatStateImplCopyWithImpl<$Res>
     Object? geminiDrawerData = null,
     Object? geminiChatModelList = null,
     Object? chatGPTChatModelList = null,
-    Object? intList = null,
     Object? chatgptSelected = null,
     Object? chatGptChatId = freezed,
     Object? geminiChatId = freezed,
@@ -165,10 +156,6 @@ class __$$ChatStateImplCopyWithImpl<$Res>
           ? _value._chatGPTChatModelList
           : chatGPTChatModelList // ignore: cast_nullable_to_non_nullable
               as List<ChatGPTChatModel>,
-      intList: null == intList
-          ? _value._intList
-          : intList // ignore: cast_nullable_to_non_nullable
-              as List<int>,
       chatgptSelected: null == chatgptSelected
           ? _value.chatgptSelected
           : chatgptSelected // ignore: cast_nullable_to_non_nullable
@@ -193,15 +180,13 @@ class _$ChatStateImpl implements _ChatState {
       final List<GeminiDrawerResponse> geminiDrawerData = const [],
       final List<GeminiChatModel> geminiChatModelList = const [],
       final List<ChatGPTChatModel> chatGPTChatModelList = const [],
-      final List<int> intList = const [1, 2, 3],
       this.chatgptSelected = false,
       this.chatGptChatId,
       this.geminiChatId})
       : _chatgptDrawerData = chatgptDrawerData,
         _geminiDrawerData = geminiDrawerData,
         _geminiChatModelList = geminiChatModelList,
-        _chatGPTChatModelList = chatGPTChatModelList,
-        _intList = intList;
+        _chatGPTChatModelList = chatGPTChatModelList;
 
   final List<ChatGPTDrawerResponse> _chatgptDrawerData;
   @override
@@ -243,15 +228,6 @@ class _$ChatStateImpl implements _ChatState {
     return EqualUnmodifiableListView(_chatGPTChatModelList);
   }
 
-  final List<int> _intList;
-  @override
-  @JsonKey()
-  List<int> get intList {
-    if (_intList is EqualUnmodifiableListView) return _intList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_intList);
-  }
-
   @override
   @JsonKey()
   final bool chatgptSelected;
@@ -262,7 +238,7 @@ class _$ChatStateImpl implements _ChatState {
 
   @override
   String toString() {
-    return 'ChatState(chatgptDrawerData: $chatgptDrawerData, geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, chatGPTChatModelList: $chatGPTChatModelList, intList: $intList, chatgptSelected: $chatgptSelected, chatGptChatId: $chatGptChatId, geminiChatId: $geminiChatId)';
+    return 'ChatState(chatgptDrawerData: $chatgptDrawerData, geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, chatGPTChatModelList: $chatGPTChatModelList, chatgptSelected: $chatgptSelected, chatGptChatId: $chatGptChatId, geminiChatId: $geminiChatId)';
   }
 
   @override
@@ -278,7 +254,6 @@ class _$ChatStateImpl implements _ChatState {
                 .equals(other._geminiChatModelList, _geminiChatModelList) &&
             const DeepCollectionEquality()
                 .equals(other._chatGPTChatModelList, _chatGPTChatModelList) &&
-            const DeepCollectionEquality().equals(other._intList, _intList) &&
             (identical(other.chatgptSelected, chatgptSelected) ||
                 other.chatgptSelected == chatgptSelected) &&
             (identical(other.chatGptChatId, chatGptChatId) ||
@@ -294,7 +269,6 @@ class _$ChatStateImpl implements _ChatState {
       const DeepCollectionEquality().hash(_geminiDrawerData),
       const DeepCollectionEquality().hash(_geminiChatModelList),
       const DeepCollectionEquality().hash(_chatGPTChatModelList),
-      const DeepCollectionEquality().hash(_intList),
       chatgptSelected,
       chatGptChatId,
       geminiChatId);
@@ -312,7 +286,6 @@ abstract class _ChatState implements ChatState {
       final List<GeminiDrawerResponse> geminiDrawerData,
       final List<GeminiChatModel> geminiChatModelList,
       final List<ChatGPTChatModel> chatGPTChatModelList,
-      final List<int> intList,
       final bool chatgptSelected,
       final String? chatGptChatId,
       final String? geminiChatId}) = _$ChatStateImpl;
@@ -325,8 +298,6 @@ abstract class _ChatState implements ChatState {
   List<GeminiChatModel> get geminiChatModelList;
   @override
   List<ChatGPTChatModel> get chatGPTChatModelList;
-  @override
-  List<int> get intList;
   @override
   bool get chatgptSelected;
   @override

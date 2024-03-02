@@ -19,8 +19,9 @@ class MyApp extends StatelessWidget {
       title: 'Rounak AI',
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: scaffoldMessenger.scaffoldMessengerKey,
-      initialRoute: NavigationHandler.initalRoute,
+      initialRoute: NavigationHandler.initialRoute,
       onGenerateRoute: NavigationHandler.onGenerate,
+      navigatorKey: NavigationHandler.navigatorKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

@@ -11,12 +11,29 @@ class ChatBloc extends Cubit<ChatState> {
   ChatRepository chatRepository;
   ChatBloc(this.chatRepository) : super(ChatState());
 
+  initialize() {
+    setDefaultGeminiChatModelList();
+    setDefaultChatGptModelList();
+  }
+
   void setDefaultGeminiChatModelList() {
     List<GeminiChatModel> defaultGeminiChatModelList = [
       GeminiChatModel(role: 'user', parts: "Hi"),
       GeminiChatModel(role: 'model', parts: "Hi, How can I help you today"),
     ];
     emit(state.copyWith(geminiChatModelList: defaultGeminiChatModelList));
+  }
+
+  void updateChatGPTmodelList(List<ChatGPTChatModel> value) {
+    emit(state.copyWith(chatGPTChatModelList: value));
+  }
+
+  void updateGeminiModelList(List<GeminiChatModel> value) {
+    emit(state.copyWith(geminiChatModelList: value));
+  }
+
+  void updateChatGptSelected(bool value) {
+    emit(state.copyWith(chatgptSelected: value));
   }
 
   void setDefaultChatGptModelList() {
@@ -59,6 +76,7 @@ class ChatBloc extends Cubit<ChatState> {
                 new_message: messages.last.parts,
                 old_message: messages.sublist(0, messages.length - 1)))
             .listen((event) {
+          print("e=> ${event.data}");
           emit(state.copyWith(geminiChatId: event.chatId));
           // scrollToBottom();
           if (state.geminiChatModelList.last.role == "user") {
@@ -90,6 +108,7 @@ class ChatBloc extends Cubit<ChatState> {
                 new_message: "hi",
                 old_message: messages))
             .listen((event) {
+          print("e=> ${event.data}");
           emit(state.copyWith(chatGptChatId: event.chatId));
           // scrollToBottom();
           if (state.chatGPTChatModelList.last.role == "user") {
@@ -108,5 +127,13 @@ class ChatBloc extends Cubit<ChatState> {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  updateChatGPTchatIdValue(String? value) {
+    emit(state.copyWith(chatGptChatId: value));
+  }
+
+  updateGeminichatIdValue(String? value) {
+    emit(state.copyWith(geminiChatId: value));
   }
 }

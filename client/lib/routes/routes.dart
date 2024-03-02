@@ -10,7 +10,7 @@ class LoginRoute extends RouteData {
   }
 
   @override
-  String get routeName => "/login";
+  String get routeName => "/";
 }
 
 class ChatRoute extends RouteData {
