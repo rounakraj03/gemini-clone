@@ -1,4 +1,4 @@
-const user_model = require("../models/user_model");
+import user_model from "../models/user_model.js";
 //@desc Use to do login
 //@route POST /user/login
 //@access Public
@@ -61,4 +61,4 @@ const signup = async (req, res, next) => {
 
 
 
-module.exports = { login, signup}
+export { login, signup}

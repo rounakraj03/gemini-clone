@@ -1,5 +1,5 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const geminiHistoryModel = require("../models/gemini_history_model");
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import geminiHistoryModel from "../models/gemini_history_model.js";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -199,7 +199,7 @@ const addGeminiHistory = async (req, res, next) => {
 
 
 
-module.exports = {
+export  {
     newChat,
     dummyChat,
     getGeminiHistory,

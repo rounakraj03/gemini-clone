@@ -1,6 +1,6 @@
-const { OpenAI } = require("openai");
-const chatgpt_history_model = require("../models/chatgpt_history_model");
-const chatGPThistoryModel = require("../models/chatgpt_history_model");
+import { OpenAI } from "openai";
+import chatgpt_history_model from "../models/chatgpt_history_model.js";
+import chatGPThistoryModel from "../models/chatgpt_history_model.js";
 
 
 const openai = new OpenAI({
@@ -155,7 +155,7 @@ const addChatGptHistory = async (req, res, next) => {
 
 
 
-module.exports = {
+export {
     newChat,
     getChatGptHistory,
     addChatGptHistory

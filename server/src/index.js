@@ -1,9 +1,15 @@
-const express = require("express");
-const cors = require("cors");
-const { urlInformation } = require("./middleware/urlInformation");
-const errorHandler = require("./middleware/errorHandler");
-const {mongoose} = require("mongoose");
-const dotenv = require("dotenv").config();
+import express from "express";
+import 'dotenv/config';
+import cors from "cors";
+import urlInformation from "./middleware/urlInformation.js"
+import errorHandler from "./middleware/errorHandler.js";
+import mongoose from "mongoose";
+import userRoutes from './routes/userRoutes.mjs';
+import geminiRoutes from './routes/geminiRoutes.mjs';
+import chatgptRoutes from './routes/chatgptRoutes.mjs';
+import claudeRoutes from './routes/claudeRoutes.mjs';
+
+
 
 const app = express();
 const port =  process.env.PORT || 3002;
@@ -14,9 +20,10 @@ app.use(cors());
 
 app.use(urlInformation);
 
-app.use("/user", require("./routes/userRoutes"));
-app.use("/gemini", require("./routes/geminiRoutes"));
-app.use("/chatgpt", require("./routes/chatgptRoutes"));
+app.use("/user", userRoutes);
+app.use("/gemini", geminiRoutes);
+app.use("/chatgpt", chatgptRoutes);
+app.use("/claude", claudeRoutes);
 
 
 app.get("/", (req, res) => {

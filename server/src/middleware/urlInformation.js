@@ -1,4 +1,4 @@
-function urlInformation(req, res, next) {
+const urlInformation = (req, res, next) => {
     console.log("=============================================================================================");
     console.log('Request Path:', req.path);
     console.log('Request Body:', req.body);
@@ -30,8 +30,6 @@ function urlInformation(req, res, next) {
     };
   
     next();
-  }
+  };
 
-module.exports = {
-    urlInformation
-}
+  export default urlInformation;

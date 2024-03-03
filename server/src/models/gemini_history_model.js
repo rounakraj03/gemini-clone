@@ -1,5 +1,5 @@
-const {mongoose} = require("mongoose");
-const userSchema = require("./user_model");
+import { mongoose } from "mongoose";
+import userSchema from "./user_model.js";
 
 const Schema = mongoose.Schema;
 
@@ -15,4 +15,4 @@ const geminiHistorySchema = new Schema({
 
 const geminiHistoryModel = mongoose.model("geminiHistory", geminiHistorySchema, "geminiHistory");
 
-module.exports = geminiHistoryModel;
+export default geminiHistoryModel;

@@ -1,5 +1,5 @@
-const {mongoose} = require("mongoose");
-const userSchema = require("./user_model");
+import { mongoose } from "mongoose";
+import userSchema from "./user_model.js";
 
 const Schema = mongoose.Schema;
 
@@ -17,4 +17,4 @@ const chatGPThistorySchema = new Schema({
 const chatGPThistoryModel = mongoose.model("chatgptHistory", chatGPThistorySchema, "chatgptHistory");
 
 
-module.exports = chatGPThistoryModel;
+export default chatGPThistoryModel;
