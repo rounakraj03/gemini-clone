@@ -1,7 +1,7 @@
 import { BedrockRuntime } from "@aws-sdk/client-bedrock-runtime";
 import multer from "multer";
 import pkg from "pdf-to-text";
-import claudeHistoryModel from "../models/claude_history_model";
+import claudeHistoryModel from "../models/claude_history_model.js";
 const { info, pdfToText } = pkg;
 
 
@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         const originalName = file.originalname;
         // const ext = extname(originalName);
-        cb(null, `${Date.now()}${originalName.split(' ').join('')}`);
+        cb(null, `${Date.now()}-rounak-${originalName.split(' ').join('')}`);
     } 
 });
 
@@ -30,16 +30,21 @@ const newChat = async (req, res, next) => {
             }
             console.log("req", req.body.question);
         const  {question, userId} = req.body;
-        if(!req.file || !question) {
-            return res.status(400).json({error: 'No file uploaded or no question sent'});
+        if(!req.file || !question || !userId) {
+            return res.status(400).json({error: 'No file uploaded or no question sent or No userId found'});
         }
         console.log('file uploaded',req.file.path);
         console.log('question:', question);
         const responseData = await claudeReply({pdf_path: req.file.path, question: question});
         if(responseData) {
-            addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{"Human": question}, {"Assistant": responseData["response"]}]})
+            const fileHeading = (req.file.path).split("-rounak-")[1];
+            const result = await addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{"Human": question}, {"Assistant": responseData["response"]}], filename: fileHeading});
+            res.status(200).send({
+                userId: result["userId"],
+                chatHistory: result["chatHistory"]  ,
+                chatId: result["_id"]    
+            });
         }
-        res.status(200).send(responseData);
         }); 
     } catch (error) {
     res.status(406);
@@ -47,7 +52,7 @@ const newChat = async (req, res, next) => {
     }
 };
 
-const addOrUpdateChatHistory = async ({chatId=null, userId, bookData, chatHistory}) => {
+const addOrUpdateChatHistory = async ({chatId=null, userId, bookData, chatHistory, filename}) => {
     if (chatId) {
         const updateClaudeSavedData = await claudeHistoryModel.findByIdAndUpdate(chatId, {
             chatHistory: chatHistory
@@ -61,7 +66,7 @@ const addOrUpdateChatHistory = async ({chatId=null, userId, bookData, chatHistor
         userId: userId,
         chatHistory: chatHistory,
         bookData: bookData,
-        heading: `${new Date()}`
+        heading: filename
      });
      const savedClaudeData = await newClaudeSavedData.save();
      return savedClaudeData;
@@ -70,65 +75,82 @@ const addOrUpdateChatHistory = async ({chatId=null, userId, bookData, chatHistor
 
 
 const claudeReply = async ({pdf_path, question}) => {
-    return new Promise((resolve, reject) => {
-        let pages = 0;
-        info(pdf_path, function(err, info) {
-            if (err) {
-                reject (err);
-            } else {
-                pages  = info["pages"];
-                if(pages) {
-                    var option = {from: 0, to: pages};
-                    pdfToText(pdf_path, option, async function(err, data) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            const prompt = data + "\n\n " + question;
-                            const response = await getTextClaude(prompt);
-                            // resolve(response);
-                            resolve({bookData: data, response: response});
-                        }
-                    });
+
+    try {
+        return new Promise((resolve, reject) => {
+            let pages = 0;
+            info(pdf_path, function(err, info) {
+                if (err) {
+                    reject (err);
                 } else {
-                    reject ('No Page Found');
+                    pages  = info["pages"];
+                    if(pages) {
+                        if(pages > 100){
+                            pages = 100;
+                        }
+                        var option = {from: 0, to: pages};
+                        pdfToText(pdf_path, option, async function(err, data) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                try {
+                                    const prompt = data + "\n\n " + question;
+                                    const response = await getTextClaude(prompt);
+                                    resolve({bookData: data, response: response});    
+                                } catch (error) {
+                                    console.log("abcc");
+                                    reject(error);
+                                }
+                            }
+                        });
+                    } else {
+                        reject ('No Page Found');
+                    }
                 }
-            }
-        })
-    });
+            })
+        });
+    } catch (error) {
+        console.log("abccffff");
+        throw new Error(error);
+    }
 }
 
 
 const getTextClaude = async (prompt) => {
-    const bedrock = new BedrockRuntime({
-        credentials: {
-            accessKeyId: process.env.AWS_ACCESS_KEY,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-        },
-        region: "us-east-1"
-    });
-
-    const params = {
-        modelId: "anthropic.claude-v2:1",
-        contentType: "application/json",
-        accept: "application/json",
-        body: JSON.stringify({
-            prompt:`\n\nHuman: ${prompt} \n\nAssistant:\n`,
-            max_tokens_to_sample: 120000,
-            // max_tokens_to_sample: 2048,
-            temperature: 0.7,
-            top_k: 250,
-            top_p: 1,
-            // stop_sequence: ["\\n\\nHuman:"],q
-        }),
-    };
-
-    const data = await bedrock.invokeModel(params);
-
-    if(!data) {
-        throw new Error("AWS Bedrock Clause Error");
-    } else {
-        const response_body = JSON.parse(textDecoder.decode(data.body));
-        return response_body.completion;
+    try {
+        const bedrock = new BedrockRuntime({
+            credentials: {
+                accessKeyId: process.env.AWS_ACCESS_KEY,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+            },
+            region: "us-east-1"
+        });
+    
+        const params = {
+            modelId: "anthropic.claude-v2:1",
+            contentType: "application/json",
+            accept: "application/json",
+            body: JSON.stringify({
+                prompt:`\n\nHuman: ${prompt} \n\nAssistant:\n`,
+                max_tokens_to_sample: 120000,
+                // max_tokens_to_sample: 2048,
+                temperature: 0.7,
+                top_k: 250,
+                top_p: 1,
+                // stop_sequence: ["\\n\\nHuman:"],q
+            }),
+        };
+    
+        const data = await bedrock.invokeModel(params);
+    
+        if(!data) {
+            throw new Error("AWS Bedrock Clause Error");
+        } else {
+            const response_body = JSON.parse(textDecoder.decode(data.body));
+            return response_body.completion;
+        }    
+    } catch (error) {
+        throw error;
     }
 }
 
