@@ -1,6 +1,7 @@
 import { BedrockRuntime } from "@aws-sdk/client-bedrock-runtime";
 import multer from "multer";
 import pkg from "pdf-to-text";
+import claudeHistoryModel from "../models/claude_history_model";
 const { info, pdfToText } = pkg;
 
 
@@ -28,13 +29,16 @@ const newChat = async (req, res, next) => {
                 return res.status(500).json({ error: 'Unknown error occurred' });
             }
             console.log("req", req.body.question);
-        const  question = req.body.question;
+        const  {question, userId} = req.body;
         if(!req.file || !question) {
             return res.status(400).json({error: 'No file uploaded or no question sent'});
         }
         console.log('file uploaded',req.file.path);
         console.log('question:', question);
-        const responseData = await claudeReply({pdf_path: req.file.path, question: question})
+        const responseData = await claudeReply({pdf_path: req.file.path, question: question});
+        if(responseData) {
+            addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{"Human": question}, {"Assistant": responseData["response"]}]})
+        }
         res.status(200).send(responseData);
         }); 
     } catch (error) {
@@ -42,6 +46,27 @@ const newChat = async (req, res, next) => {
     next(error);        
     }
 };
+
+const addOrUpdateChatHistory = async ({chatId=null, userId, bookData, chatHistory}) => {
+    if (chatId) {
+        const updateClaudeSavedData = await claudeHistoryModel.findByIdAndUpdate(chatId, {
+            chatHistory: chatHistory
+        }, {new: true});
+    if (!updateClaudeSavedData) {
+        throw new Error("Chat history not found");
+    }
+    return updateClaudeSavedData;
+    } else {
+     const newClaudeSavedData = new claudeHistoryModel({
+        userId: userId,
+        chatHistory: chatHistory,
+        bookData: bookData,
+        heading: `${new Date()}`
+     });
+     const savedClaudeData = await newClaudeSavedData.save();
+     return savedClaudeData;
+    }
+}
 
 
 const claudeReply = async ({pdf_path, question}) => {
@@ -60,7 +85,8 @@ const claudeReply = async ({pdf_path, question}) => {
                         } else {
                             const prompt = data + "\n\n " + question;
                             const response = await getTextClaude(prompt);
-                            resolve(response);
+                            // resolve(response);
+                            resolve({bookData: data, response: response});
                         }
                     });
                 } else {
