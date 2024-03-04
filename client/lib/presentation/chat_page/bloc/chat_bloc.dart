@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:client/network/models/chat_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/repository/chat_repository.dart';
 import 'package:client/presentation/chat_page/state/chat_state.dart';
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -163,5 +167,17 @@ class ChatBloc extends Cubit<ChatState> {
 
   updateGeminichatIdValue(String? value) {
     emit(state.copyWith(geminiChatId: value));
+  }
+
+  getClaudeReplyWithFile(
+      {required String filePath,
+      required String fileName,
+      required String question}) async {
+    final formData = FormData.fromMap({
+      'pdf': await MultipartFile.fromFile(filePath, filename: fileName),
+      'question': question
+    });
+    final response = await chatRepository.getClaudeResponseWithFileUpload(formData);
+    print("Res ====> ${response}");
   }
 }

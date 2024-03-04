@@ -13,7 +13,12 @@ import 'package:injectable/injectable.dart';
 
 @Injectable(as: ChatRepository)
 class ChatRepositoryImpl extends ChatRepository {
-  Dio _dio = Dio();
+  final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: const Duration(minutes: 5), // Adjust as needed
+      receiveTimeout: const Duration(minutes: 5), // Adjust as needed
+    ),
+  );
   ApiErrorHandler apiErrorHandler = ApiErrorHandler();
   SecuredSharedPreference securedSharedPreference = SecuredSharedPreference();
   // final baseUrl = "http://192.168.2.192:5001/";
@@ -22,16 +27,20 @@ class ChatRepositoryImpl extends ChatRepository {
 
   final geminiNewChatUrl = "gemini/new-chat";
   final chatGPTNewChatUrl = "chatgpt/new-chat";
+  final claudeNewChatUrl = "claude/new-chat";
+
   final loginUrl = "user/login";
   final signupUrl = "user/signup";
 
   final geminiChatHistory = "gemini/getGeminiHistory";
   final chatGPTChatHistory = "chatgpt/getChatGptHistory";
+  final claudeChatHistory = "claude/getClaudeHistory";
 
   ChatRepository() {
     print("Chat Repository Initialized");
   }
 
+  @override
   Future<List<GeminiDrawerResponse>> getGeminiDrawerData(
       DrawerRequest drawerRequest) async {
     try {
@@ -47,6 +56,7 @@ class ChatRepositoryImpl extends ChatRepository {
     }
   }
 
+  @override
   Future<List<ChatGPTDrawerResponse>> getChatGptDrawerData(
       DrawerRequest drawerRequest) async {
     try {
@@ -64,6 +74,7 @@ class ChatRepositoryImpl extends ChatRepository {
     }
   }
 
+  @override
   Stream<NewChatResponse> getGeminiChatResponse(
       GeminiNewChatRequest newChatRequest) async* {
     try {
@@ -90,6 +101,7 @@ class ChatRepositoryImpl extends ChatRepository {
     }
   }
 
+  @override
   Stream<NewChatResponse> getChatGPTChatResponse(
       ChatGPTNewChatRequest newChatRequest) async* {
     try {
@@ -118,6 +130,7 @@ class ChatRepositoryImpl extends ChatRepository {
     }
   }
 
+  @override
   Future<LoginSignUpResponse> login(
       {required String email, required String password}) async {
     try {
@@ -133,6 +146,7 @@ class ChatRepositoryImpl extends ChatRepository {
     }
   }
 
+  @override
   Future<LoginSignUpResponse> signup(
       {required String email, required String password}) async {
     try {
@@ -152,12 +166,45 @@ class ChatRepositoryImpl extends ChatRepository {
     }
   }
 
+  @override
   Future<void> saveUserId(String value) async {
     await securedSharedPreference.secureSetString("userId", value);
   }
 
+  @override
   Future<String> getUserId() async {
     final value = await securedSharedPreference.secureGetString("userId");
     return value;
+  }
+
+  @override
+  Future<void> saveEmail(String value) async {
+    await securedSharedPreference.secureSetString("email", value);
+  }
+
+  @override
+  Future<String> getEmail() async {
+    final value = await securedSharedPreference.secureGetString("email");
+    return value;
+  }
+
+  @override
+  Future<String> getClaudeResponseWithFileUpload(FormData formData) async {
+    final headers = <String, String>{
+      'Content-Type': 'multipart/form-data',
+    };
+    final apiUrl = baseUrl + claudeNewChatUrl;
+    final response = await _dio.post(
+      apiUrl,
+      data: formData,
+      onSendProgress: (sent, total) {
+        final progress = (sent / total) * 100;
+        print('Upload progress: $progress%');
+      },
+      options: Options(headers: headers),
+    );
+    print("response => $response");
+
+    return response.toString();
   }
 }

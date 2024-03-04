@@ -3,6 +3,7 @@ import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/login_signUp_response_model.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/models/new_chat_response.dart';
+import 'package:dio/dio.dart';
 
 abstract class ChatRepository {
   Future<List<GeminiDrawerResponse>> getGeminiDrawerData(
@@ -26,4 +27,10 @@ abstract class ChatRepository {
   Future<void> saveUserId(String value);
 
   Future<String> getUserId();
+
+  Future<void> saveEmail(String value);
+
+  Future<String> getEmail();
+
+  Future<String> getClaudeResponseWithFileUpload(FormData formData);
 }

@@ -7,4 +7,5 @@ class AppColors {
   static const Color greyTextColor = Color(0xffbcbdbd);
   static const Color desertStorm = Color(0xFFF8F8F8);
   static const Color chatGPTColor = Color(0xFF159c7c);
+  static const Color claudeColor = Color(0xFFca9671);
 }

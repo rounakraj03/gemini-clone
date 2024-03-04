@@ -56,3 +56,31 @@ class ChatGPTChatModel {
   factory ChatGPTChatModel.fromJson(String source) =>
       ChatGPTChatModel.fromMap(json.decode(source));
 }
+
+class ClaudeChatModel {
+  String role;
+  String parts;
+  ClaudeChatModel({
+    required this.role,
+    required this.parts,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'role': role,
+      'parts': parts,
+    };
+  }
+
+  factory ClaudeChatModel.fromMap(Map<String, dynamic> map) {
+    return ClaudeChatModel(
+      role: map['role'] ?? '',
+      parts: map['parts'] ?? '',
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ClaudeChatModel.fromJson(String source) =>
+      ClaudeChatModel.fromMap(json.decode(source));
+}
