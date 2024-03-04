@@ -38,7 +38,7 @@ const newChat = async (req, res, next) => {
         const responseData = await claudeReply({pdf_path: req.file.path, question: question});
         if(responseData) {
             const fileHeading = (req.file.path).split("-rounak-")[1];
-            const result = await addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{"Human": question}, {"Assistant": responseData["response"]}], filename: fileHeading});
+            const result = await addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{role: "Human", content: question}, {role:"Assistant", content: responseData["response"]}], filename: fileHeading});
             res.status(200).send({
                 userId: result["userId"],
                 chatHistory: result["chatHistory"]  ,
@@ -155,6 +155,44 @@ const getTextClaude = async (prompt) => {
 }
 
 
+const nextChats = async (req, res, next) => {
+    const {userId, chatId, question} = req.body;
+
+    if(!userId || !chatId || !question) {
+        return res.status(400).json({error: 'Send all fields'});
+    }
+    //getDataFromMongooseForSpecificId;
+    const data = await claudeHistoryModel.findOne({_id: chatId});
+    if(data["chatHistory"] && data["bookData"]) {
+        data["chatHistory"].push({role: "Human", content: question});
+        let stringPrompt = "Human: " + data["bookData"];
+        for(const d in data["chatHistory"]) {
+            if(d == 0) {
+                stringPrompt += data["chatHistory"][d]["content"];
+            } else {
+                if(data["chatHistory"][d]["role"] == "Human") {
+                    stringPrompt += " Human: " + data["chatHistory"][d]["content"];
+                } else {
+                    stringPrompt += " Assistant: " + data["chatHistory"][d]["content"];
+                }
+            }
+        }
+        stringPrompt += " Assistant: ";
+        const response = await getTextClaude(stringPrompt);
+        data["chatHistory"].push({role: "Assistant", content: response});
+        const result = await addOrUpdateChatHistory({userId: userId, chatHistory: data["chatHistory"], chatId: chatId});
+    }
+
+    // console.log(`data => ${data}`)
+    res.status(200).json({
+        chatId : data["_id"],
+        userId: data["userId"],
+        chatHistory: data["chatHistory"]
+     });
+} 
+
+
 export {
-    newChat
+    newChat,
+    nextChats
 };

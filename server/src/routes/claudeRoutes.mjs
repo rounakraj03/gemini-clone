@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { newChat } from "../controllers/claudeController.js";
+import { newChat, nextChats } from "../controllers/claudeController.js";
 const claudeRoutes  = Router();
 
 claudeRoutes.route("/new-chat").post(newChat);
+claudeRoutes.route("/next-chats").post(nextChats);
 
 export default claudeRoutes;
