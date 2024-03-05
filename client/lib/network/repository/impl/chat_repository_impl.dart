@@ -77,6 +77,22 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
+  Future<List<ClaudeDrawerResponse>> getClaudeDrawerData(
+      DrawerRequest drawerRequest) async {
+    try {
+      final apiUrl = baseUrl + claudeChatHistory;
+      final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
+      List<ClaudeDrawerResponse> result = [];
+      response.data.forEach((e) => result.add(ClaudeDrawerResponse.fromMap(e)));
+      return result;
+    } catch (e) {
+      print("error : $e");
+      apiErrorHandler.handleError(e);
+      throw e;
+    }
+  }
+
+  @override
   Stream<NewChatResponse> getGeminiChatResponse(
       GeminiNewChatRequest newChatRequest) async* {
     try {

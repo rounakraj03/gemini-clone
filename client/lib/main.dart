@@ -1,5 +1,5 @@
 import 'package:client/di/di.dart';
-import 'package:client/presentation/chat_page/view/claude_screen.dart';
+import 'package:client/presentation/claude_page/view/claude_screen.dart';
 import 'package:client/presentation/login_page/view/login_screen.dart';
 import 'package:client/core/snack_bar.dart';
 import 'package:client/routes/router.dart';
@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const ChatScreen(),
-      // home: const LoginScreen(),
-      home: const ClaudeScreen(),
+      home: const LoginScreen(),
+      // home: const ClaudeScreen(),
     );
   }
 }

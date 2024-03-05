@@ -6,16 +6,16 @@ part 'chat_state.freezed.dart';
 
 @freezed
 class ChatState with _$ChatState {
-  factory ChatState({
-    @Default([]) List<ChatGPTDrawerResponse> chatgptDrawerData,
-    @Default([]) List<GeminiDrawerResponse> geminiDrawerData,
-    @Default([]) List<GeminiChatModel> geminiChatModelList,
-    @Default([]) List<ChatGPTChatModel> chatGPTChatModelList,
-    @Default([]) List<ClaudeChatModel> claudeChatModelList,
-    @Default(false) bool chatgptSelected,
-    String? chatGptChatId,
-    String? geminiChatId,
-    String? claudeChatId,
-    String? bookHeading
-  }) = _ChatState;
+  factory ChatState(
+      {@Default([]) List<ChatGPTDrawerResponse> chatgptDrawerData,
+      @Default([]) List<GeminiDrawerResponse> geminiDrawerData,
+      @Default([]) List<GeminiChatModel> geminiChatModelList,
+      @Default([]) List<ChatGPTChatModel> chatGPTChatModelList,
+      @Default([]) List<ClaudeChatModel> claudeChatModelList,
+      @Default(false) bool chatgptSelected,
+      String? chatGptChatId,
+      String? geminiChatId,
+      String? claudeChatId,
+      String? bookHeading,
+      @Default("") String emailId}) = _ChatState;
 }

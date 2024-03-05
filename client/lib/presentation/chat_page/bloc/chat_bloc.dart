@@ -19,8 +19,14 @@ class ChatBloc extends Cubit<ChatState> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   initialize() {
+    getEmailId();
     setDefaultGeminiChatModelList();
     setDefaultChatGptModelList();
+  }
+
+  getEmailId() async {
+    String email = await chatRepository.getEmail();
+    emit(state.copyWith(emailId: email));
   }
 
   void scrollToBottom({bool stopScrolling = false}) {

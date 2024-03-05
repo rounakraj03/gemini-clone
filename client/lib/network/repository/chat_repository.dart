@@ -13,6 +13,9 @@ abstract class ChatRepository {
   Future<List<ChatGPTDrawerResponse>> getChatGptDrawerData(
       DrawerRequest drawerRequest);
 
+  Future<List<ClaudeDrawerResponse>> getClaudeDrawerData(
+      DrawerRequest drawerRequest);
+
   Stream<NewChatResponse> getGeminiChatResponse(
       GeminiNewChatRequest newChatRequest);
 

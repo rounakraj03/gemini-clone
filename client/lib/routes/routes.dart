@@ -1,4 +1,5 @@
 import 'package:client/presentation/chat_page/view/chat_screen.dart';
+import 'package:client/presentation/claude_page/view/claude_screen.dart';
 import 'package:client/presentation/login_page/view/login_screen.dart';
 import 'package:client/routes/route_data.dart';
 import 'package:flutter/material.dart';
@@ -21,4 +22,14 @@ class ChatRoute extends RouteData {
 
   @override
   String get routeName => "/chat";
+}
+
+class ClaudeRoute extends RouteData {
+  @override
+  Widget build(BuildContext context) {
+    return const ClaudeScreen();
+  }
+
+  @override
+  String get routeName => "/claude";
 }

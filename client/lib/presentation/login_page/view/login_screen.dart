@@ -95,8 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               passwordController.text.isEmpty) {
                             scaffoldMessenger.showSnackBar(
                                 text: state.isLoginSelected
-                                    ? "Logging in..."
-                                    : "Signing up...");
+                                    ? "All fields mandatory"
+                                    : "All fields mandatory");
                           } else {
                             String email = emailController.text.trim();
                             email = email.toLowerCase();
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   email: email,
                                   password: password,
                                   onSuccess: (userId) =>
-                                      ChatRoute().pushReplacement(),
+                                      ClaudeRoute().pushReplacement(),
                                 );
                               } else {
                                 loginBloc.login(
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     email: email,
                                     password: password,
                                     onSuccess: (userId) =>
-                                        ChatRoute().pushReplacement());
+                                        ClaudeRoute().pushReplacement());
                               }
                             });
                           }

@@ -17,7 +17,8 @@ class LoginBloc extends Cubit<LoginState> {
       final loginInfo =
           await chatRepository.signup(email: email, password: password);
       if (loginInfo.id != "") {
-        this.chatRepository.saveUserId(loginInfo.id);
+        chatRepository.saveUserId(loginInfo.id);
+        chatRepository.saveEmail(email);
         onSuccess(loginInfo.id);
       }
     } else {
@@ -25,6 +26,7 @@ class LoginBloc extends Cubit<LoginState> {
           await chatRepository.login(email: email, password: password);
       if (signUpInfo.id != "") {
         chatRepository.saveUserId(signUpInfo.id);
+        chatRepository.saveEmail(email);
         onSuccess(signUpInfo.id);
       }
     }

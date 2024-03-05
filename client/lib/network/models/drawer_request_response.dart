@@ -28,21 +28,18 @@ class DrawerRequest {
 }
 
 class GeminiDrawerResponse {
-  String id;
-  String userId;
+  String chatId;
   String heading;
   List<GeminiChatModel> chatHistory;
   GeminiDrawerResponse({
-    required this.id,
-    required this.userId,
+    required this.chatId,
     required this.heading,
     required this.chatHistory,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
-      'userId': userId,
+      'chatId': chatId,
       'heading': heading,
       'chatHistory': chatHistory.map((x) => x.toMap()).toList(),
     };
@@ -50,8 +47,7 @@ class GeminiDrawerResponse {
 
   factory GeminiDrawerResponse.fromMap(Map<String, dynamic> map) {
     return GeminiDrawerResponse(
-      id: map['_id'] ?? '',
-      userId: map['userId'] ?? '',
+      chatId: map['chatId'] ?? '',
       heading: map['heading'] ?? '',
       chatHistory: List<GeminiChatModel>.from(
           map['chatHistory']?.map((x) => GeminiChatModel.fromMap(x))),
@@ -65,21 +61,18 @@ class GeminiDrawerResponse {
 }
 
 class ChatGPTDrawerResponse {
-  String id;
-  String userId;
+  String chatId;
   String heading;
   List<ChatGPTChatModel> chatHistory;
   ChatGPTDrawerResponse({
-    required this.id,
-    required this.userId,
+    required this.chatId,
     required this.heading,
     required this.chatHistory,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
-      'userId': userId,
+      'chatId': chatId,
       'heading': heading,
       'chatHistory': chatHistory.map((x) => x.toMap()).toList(),
     };
@@ -87,8 +80,7 @@ class ChatGPTDrawerResponse {
 
   factory ChatGPTDrawerResponse.fromMap(Map<String, dynamic> map) {
     return ChatGPTDrawerResponse(
-      id: map['_id'] ?? '',
-      userId: map['userId'] ?? '',
+      chatId: map['chatId'] ?? '',
       heading: map['heading'] ?? '',
       chatHistory: List<ChatGPTChatModel>.from(
           map['chatHistory']?.map((x) => ChatGPTChatModel.fromMap(x))),
@@ -99,4 +91,37 @@ class ChatGPTDrawerResponse {
 
   factory ChatGPTDrawerResponse.fromJson(String source) =>
       ChatGPTDrawerResponse.fromMap(json.decode(source));
+}
+
+class ClaudeDrawerResponse {
+  String chatId;
+  String heading;
+  List<ClaudeChatModel> chatHistory;
+  ClaudeDrawerResponse({
+    required this.chatId,
+    required this.heading,
+    required this.chatHistory,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'chatId': chatId,
+      'heading': heading,
+      'chatHistory': chatHistory.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory ClaudeDrawerResponse.fromMap(Map<String, dynamic> map) {
+    return ClaudeDrawerResponse(
+      chatId: map['chatId'] ?? '',
+      heading: map['heading'] ?? '',
+      chatHistory: List<ClaudeChatModel>.from(
+          map['chatHistory']?.map((x) => ClaudeChatModel.fromMap(x))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ClaudeDrawerResponse.fromJson(String source) =>
+      ClaudeDrawerResponse.fromMap(json.decode(source));
 }

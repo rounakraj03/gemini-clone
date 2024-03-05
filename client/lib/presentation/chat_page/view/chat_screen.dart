@@ -180,15 +180,15 @@ class DrawerWidget extends StatelessWidget {
                         ? Text(state.chatgptDrawerData[index - 1].heading)
                         : Text(state.geminiDrawerData[index - 1].heading),
                     onTap: () {
-                      print(state.chatgptDrawerData[index - 1].id);
+                      print(state.chatgptDrawerData[index - 1].chatId);
                       if (state.chatgptSelected) {
                         chatBloc.updateChatGPTchatIdValue(
-                            state.chatgptDrawerData[index - 1].id);
+                            state.chatgptDrawerData[index - 1].chatId);
                         chatBloc.updateChatGPTmodelList(
                             state.chatgptDrawerData[index - 1].chatHistory);
                       } else {
                         chatBloc.updateGeminichatIdValue(
-                            state.geminiDrawerData[index - 1].id);
+                            state.geminiDrawerData[index - 1].chatId);
                         chatBloc.updateGeminiModelList(
                             state.geminiDrawerData[index - 1].chatHistory);
                       }
@@ -214,111 +214,114 @@ class AppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(
-      builder: (context, state) {
-        return CustomAppBar(
-            customAppBarAttribute: CustomAppBarAttribute(
-                appBarSideWidgets: AppBarSideWidgets(
-          leading: Row(
-            children: [
-              InkWell(
-                onTapDown: (details) {
-                  chatBloc.updateChatGptSelected(true);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(
-                        state.chatgptSelected
-                            ? selectedPaddingSize
-                            : unselectedPaddingSize,
+    return BlocProvider.value(
+      value: chatBloc,
+      child: BlocBuilder<ChatBloc, ChatState>(
+        builder: (context, state) {
+          return CustomAppBar(
+              customAppBarAttribute: CustomAppBarAttribute(
+                  appBarSideWidgets: AppBarSideWidgets(
+            leading: Row(
+              children: [
+                InkWell(
+                  onTapDown: (details) {
+                    chatBloc.updateChatGptSelected(true);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(
+                          state.chatgptSelected
+                              ? selectedPaddingSize
+                              : unselectedPaddingSize,
+                        ),
+                        decoration: BoxDecoration(
+                            color: AppColors.desertStorm,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Image.asset(
+                          Assets.chatGPTLogo2,
+                          height: state.chatgptSelected
+                              ? selectedImageSize
+                              : unselectedImageSize,
+                          width: state.chatgptSelected
+                              ? selectedImageSize
+                              : unselectedImageSize,
+                          fit: BoxFit.cover,
+                          color: AppColors.scaffoldBgColor,
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                          color: AppColors.desertStorm,
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Image.asset(
-                        Assets.chatGPTLogo2,
-                        height: state.chatgptSelected
-                            ? selectedImageSize
-                            : unselectedImageSize,
-                        width: state.chatgptSelected
-                            ? selectedImageSize
-                            : unselectedImageSize,
-                        fit: BoxFit.cover,
-                        color: AppColors.scaffoldBgColor,
-                      ),
-                    ),
-                    const Text(
-                      "ChatGpt",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.desertStorm),
-                    )
-                  ],
+                      const Text(
+                        "ChatGpt",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.desertStorm),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              InkWell(
-                onTapDown: (details) {
-                  chatBloc.updateChatGptSelected(false);
-                  print("geminichatId=> ${state.geminiChatId}");
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(
-                        state.chatgptSelected
-                            ? unselectedPaddingSize
-                            : selectedPaddingSize,
-                      ),
-                      decoration: BoxDecoration(
-                          color: AppColors.desertStorm,
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Image.asset(
-                        Assets.bardLogo,
-                        height: state.chatgptSelected
-                            ? unselectedImageSize
-                            : selectedImageSize,
-                        width: state.chatgptSelected
-                            ? unselectedImageSize
-                            : selectedImageSize,
-                        fit: BoxFit.cover,
-                        color: AppColors.scaffoldBgColor,
-                      ),
-                    ),
-                    const Text(
-                      "Gemini",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.desertStorm),
-                    )
-                  ],
+                const SizedBox(
+                  width: 20,
                 ),
-              ),
-            ],
-          ),
-          trailing: SizedBox(
-            width: 80,
-            child: IconButton(
-              icon: const Icon(
-                Icons.menu_rounded,
-                size: 35,
-                color: AppColors.desertStorm,
-              ),
-              onPressed: () {
-                chatBloc.getDrawerData();
-                chatBloc.scaffoldKey.currentState?.openDrawer();
-              },
+                InkWell(
+                  onTapDown: (details) {
+                    chatBloc.updateChatGptSelected(false);
+                    print("geminichatId=> ${state.geminiChatId}");
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(
+                          state.chatgptSelected
+                              ? unselectedPaddingSize
+                              : selectedPaddingSize,
+                        ),
+                        decoration: BoxDecoration(
+                            color: AppColors.desertStorm,
+                            borderRadius: BorderRadius.circular(100)),
+                        child: Image.asset(
+                          Assets.bardLogo,
+                          height: state.chatgptSelected
+                              ? unselectedImageSize
+                              : selectedImageSize,
+                          width: state.chatgptSelected
+                              ? unselectedImageSize
+                              : selectedImageSize,
+                          fit: BoxFit.cover,
+                          color: AppColors.scaffoldBgColor,
+                        ),
+                      ),
+                      const Text(
+                        "Gemini",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.desertStorm),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-        )));
-      },
+            trailing: SizedBox(
+              width: 80,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.menu_rounded,
+                  size: 35,
+                  color: AppColors.desertStorm,
+                ),
+                onPressed: () {
+                  chatBloc.getDrawerData();
+                  chatBloc.scaffoldKey.currentState?.openDrawer();
+                },
+              ),
+            ),
+          )));
+        },
+      ),
     );
   }
 }

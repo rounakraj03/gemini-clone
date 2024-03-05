@@ -31,6 +31,7 @@ mixin _$ChatState {
   String? get geminiChatId => throw _privateConstructorUsedError;
   String? get claudeChatId => throw _privateConstructorUsedError;
   String? get bookHeading => throw _privateConstructorUsedError;
+  String get emailId => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ChatStateCopyWith<ChatState> get copyWith =>
@@ -52,7 +53,8 @@ abstract class $ChatStateCopyWith<$Res> {
       String? chatGptChatId,
       String? geminiChatId,
       String? claudeChatId,
-      String? bookHeading});
+      String? bookHeading,
+      String emailId});
 }
 
 /// @nodoc
@@ -78,6 +80,7 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? geminiChatId = freezed,
     Object? claudeChatId = freezed,
     Object? bookHeading = freezed,
+    Object? emailId = null,
   }) {
     return _then(_value.copyWith(
       chatgptDrawerData: null == chatgptDrawerData
@@ -120,6 +123,10 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
           ? _value.bookHeading
           : bookHeading // ignore: cast_nullable_to_non_nullable
               as String?,
+      emailId: null == emailId
+          ? _value.emailId
+          : emailId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -142,7 +149,8 @@ abstract class _$$ChatStateImplCopyWith<$Res>
       String? chatGptChatId,
       String? geminiChatId,
       String? claudeChatId,
-      String? bookHeading});
+      String? bookHeading,
+      String emailId});
 }
 
 /// @nodoc
@@ -166,6 +174,7 @@ class __$$ChatStateImplCopyWithImpl<$Res>
     Object? geminiChatId = freezed,
     Object? claudeChatId = freezed,
     Object? bookHeading = freezed,
+    Object? emailId = null,
   }) {
     return _then(_$ChatStateImpl(
       chatgptDrawerData: null == chatgptDrawerData
@@ -208,6 +217,10 @@ class __$$ChatStateImplCopyWithImpl<$Res>
           ? _value.bookHeading
           : bookHeading // ignore: cast_nullable_to_non_nullable
               as String?,
+      emailId: null == emailId
+          ? _value.emailId
+          : emailId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -225,7 +238,8 @@ class _$ChatStateImpl implements _ChatState {
       this.chatGptChatId,
       this.geminiChatId,
       this.claudeChatId,
-      this.bookHeading})
+      this.bookHeading,
+      this.emailId = ""})
       : _chatgptDrawerData = chatgptDrawerData,
         _geminiDrawerData = geminiDrawerData,
         _geminiChatModelList = geminiChatModelList,
@@ -293,10 +307,13 @@ class _$ChatStateImpl implements _ChatState {
   final String? claudeChatId;
   @override
   final String? bookHeading;
+  @override
+  @JsonKey()
+  final String emailId;
 
   @override
   String toString() {
-    return 'ChatState(chatgptDrawerData: $chatgptDrawerData, geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, chatGPTChatModelList: $chatGPTChatModelList, claudeChatModelList: $claudeChatModelList, chatgptSelected: $chatgptSelected, chatGptChatId: $chatGptChatId, geminiChatId: $geminiChatId, claudeChatId: $claudeChatId, bookHeading: $bookHeading)';
+    return 'ChatState(chatgptDrawerData: $chatgptDrawerData, geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, chatGPTChatModelList: $chatGPTChatModelList, claudeChatModelList: $claudeChatModelList, chatgptSelected: $chatgptSelected, chatGptChatId: $chatGptChatId, geminiChatId: $geminiChatId, claudeChatId: $claudeChatId, bookHeading: $bookHeading, emailId: $emailId)';
   }
 
   @override
@@ -323,7 +340,8 @@ class _$ChatStateImpl implements _ChatState {
             (identical(other.claudeChatId, claudeChatId) ||
                 other.claudeChatId == claudeChatId) &&
             (identical(other.bookHeading, bookHeading) ||
-                other.bookHeading == bookHeading));
+                other.bookHeading == bookHeading) &&
+            (identical(other.emailId, emailId) || other.emailId == emailId));
   }
 
   @override
@@ -338,7 +356,8 @@ class _$ChatStateImpl implements _ChatState {
       chatGptChatId,
       geminiChatId,
       claudeChatId,
-      bookHeading);
+      bookHeading,
+      emailId);
 
   @JsonKey(ignore: true)
   @override
@@ -358,7 +377,8 @@ abstract class _ChatState implements ChatState {
       final String? chatGptChatId,
       final String? geminiChatId,
       final String? claudeChatId,
-      final String? bookHeading}) = _$ChatStateImpl;
+      final String? bookHeading,
+      final String emailId}) = _$ChatStateImpl;
 
   @override
   List<ChatGPTDrawerResponse> get chatgptDrawerData;
@@ -380,6 +400,8 @@ abstract class _ChatState implements ChatState {
   String? get claudeChatId;
   @override
   String? get bookHeading;
+  @override
+  String get emailId;
   @override
   @JsonKey(ignore: true)
   _$$ChatStateImplCopyWith<_$ChatStateImpl> get copyWith =>
