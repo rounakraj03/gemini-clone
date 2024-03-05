@@ -190,10 +190,41 @@ const nextChats = async (req, res, next) => {
         chatHistory: data["chatHistory"],
         heading: data["heading"]
      });
-} 
+}
+
+//@desc Use to do signup
+//@route POST /claude/getClaudeHistory
+//@access Public
+const getClaudeHistory = async (req, res, next) => {
+    try {
+        const {userId} = req.body;
+        if(!userId) {
+            res.status(405);
+            throw new Error("All fields are mandatory");  
+        }
+        const userChat = await claudeHistoryModel.find({userId : userId}).sort({updatedAt : -1});
+        let tempList = [];
+        for (const chat of userChat) {
+            tempList.push({
+                chatId: chat["_id"],
+                heading: chat["heading"],
+                chatHistory: chat["chatHistory"],
+                updatedAt: chat["updatedAt"]
+            });
+        }
+        res.status(200).json(tempList);
+
+    } catch (error) {
+        res.status(406);
+        console.log(`Error:> ${error}`);
+        next(error);
+    }
+}
+
 
 
 export {
     newChat,
-    nextChats
+    nextChats,
+    getClaudeHistory
 };

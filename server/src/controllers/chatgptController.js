@@ -102,7 +102,16 @@ const getChatGptHistory = async (req, res, next) => {
             throw new Error("All fields are mandatory");  
         }
         const userChat = await chatGPThistoryModel.find({userId : userId}).sort({updatedAt : -1});
-        res.status(200).json(userChat);
+        let tempList = [];
+        for (const chat of userChat) {
+            tempList.push({
+                chatId: chat["_id"],
+                heading: chat["heading"],
+                chatHistory: chat["chatHistory"],
+                updatedAt: chat["updatedAt"]
+            });
+        }
+        res.status(200).json(tempList);
 
 
     } catch (error) {
