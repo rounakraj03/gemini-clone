@@ -187,7 +187,8 @@ const nextChats = async (req, res, next) => {
     res.status(200).json({
         chatId : data["_id"],
         userId: data["userId"],
-        chatHistory: data["chatHistory"]
+        chatHistory: data["chatHistory"],
+        heading: data["heading"]
      });
 } 
 
