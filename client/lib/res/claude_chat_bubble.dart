@@ -33,7 +33,7 @@ class ClaudeChatBubble extends StatelessWidget {
                   color: AppColors.greyBgColor,
                   borderRadius: BorderRadius.circular(20)),
               child: SelectableText(
-                chatModel.parts,
+                chatModel.content,
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
             ),
@@ -51,7 +51,7 @@ class ClaudeChatBubble extends StatelessWidget {
                   color: AppColors.greyBgColor,
                   borderRadius: BorderRadius.circular(20)),
               child: SelectableText(
-                chatModel.parts,
+                chatModel.content,
                 style: const TextStyle(color: Colors.black, fontSize: 16),
               ),
             ),

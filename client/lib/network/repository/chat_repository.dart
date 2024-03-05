@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:client/network/models/claude_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/login_signUp_response_model.dart';
 import 'package:client/network/models/new_chat_request.dart';
@@ -32,5 +33,9 @@ abstract class ChatRepository {
 
   Future<String> getEmail();
 
-  Future<String> getClaudeResponseWithFileUpload(FormData formData);
+  Future<ClaudeNextChatResponse> getClaudeResponseWithFileUpload(
+      FormData formData);
+
+  Future<ClaudeNextChatResponse> getClaudeNextChatsResponse(
+      ClaudeNextChatsRequest claudeNextChatsRequest);
 }

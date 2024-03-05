@@ -59,23 +59,23 @@ class ChatGPTChatModel {
 
 class ClaudeChatModel {
   String role;
-  String parts;
+  String content;
   ClaudeChatModel({
     required this.role,
-    required this.parts,
+    required this.content,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'role': role,
-      'parts': parts,
+      'content': content,
     };
   }
 
   factory ClaudeChatModel.fromMap(Map<String, dynamic> map) {
     return ClaudeChatModel(
       role: map['role'] ?? '',
-      parts: map['parts'] ?? '',
+      content: map['content'] ?? '',
     );
   }
 

@@ -14,7 +14,6 @@ class GeminiNewChatRequest {
     this.chatId,
   });
 
-
   Map<String, dynamic> toMap() {
     return {
       'new_message': new_message,
@@ -27,7 +26,8 @@ class GeminiNewChatRequest {
   factory GeminiNewChatRequest.fromMap(Map<String, dynamic> map) {
     return GeminiNewChatRequest(
       new_message: map['new_message'] ?? '',
-      old_message: List<GeminiChatModel>.from(map['old_message']?.map((x) => GeminiChatModel.fromMap(x))),
+      old_message: List<GeminiChatModel>.from(
+          map['old_message']?.map((x) => GeminiChatModel.fromMap(x))),
       userId: map['userId'] ?? '',
       chatId: map['chatId'],
     );
@@ -35,7 +35,8 @@ class GeminiNewChatRequest {
 
   String toJson() => json.encode(toMap());
 
-  factory GeminiNewChatRequest.fromJson(String source) => GeminiNewChatRequest.fromMap(json.decode(source));
+  factory GeminiNewChatRequest.fromJson(String source) =>
+      GeminiNewChatRequest.fromMap(json.decode(source));
 }
 
 class ChatGPTNewChatRequest {
@@ -74,4 +75,35 @@ class ChatGPTNewChatRequest {
 
   factory ChatGPTNewChatRequest.fromJson(String source) =>
       ChatGPTNewChatRequest.fromMap(json.decode(source));
+}
+
+class ClaudeNextChatsRequest {
+  String chatId;
+  String question;
+  String userId;
+  ClaudeNextChatsRequest({
+    required this.chatId,
+    required this.question,
+    required this.userId,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'chatId': chatId,
+      'question': question,
+      'userId': userId,
+    };
+  }
+
+  factory ClaudeNextChatsRequest.fromMap(Map<String, dynamic> map) {
+    return ClaudeNextChatsRequest(
+      chatId: map['chatId'] ?? '',
+      question: map['question'] ?? '',
+      userId: map['userId'] ?? '',
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ClaudeNextChatsRequest.fromJson(String source) => ClaudeNextChatsRequest.fromMap(json.decode(source));
 }

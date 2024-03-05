@@ -35,13 +35,12 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
   //   ClaudeChatModel(role: 'Human', parts: "Hi"),
   //   ClaudeChatModel(role: 'Assistant', parts: "Hi, How can I help you today"),
   // ];
-  List<ClaudeChatModel> claudeChatModelList = [];
+  // List<ClaudeChatModel> claudeChatModelList = [];
 
   TextEditingController textEditingController = TextEditingController();
 
   filePickerMethod() async {
-    if (claudeChatModelList.length > 0) {
-    } else {
+    if (chatBloc.state.claudeChatModelList.isEmpty) {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf'],
@@ -54,21 +53,13 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
               text: "File Size Cannot be greater than 10MB");
           file = null;
         } else {
+          chatBloc.updateBookHeadingValue(platformFile!.name);
           setState(() {
             fileName = platformFile!.name;
             filePath = platformFile!.path;
             isPdfUploaded = true;
           });
         }
-
-        // print("file2.name" + platformFile!.name);
-        // print("file2.bytes ${platformFile!.bytes}");
-        // print("file2.size ${(platformFile!.size / 1024 * 1024)}");
-        // print("file2.extension ${platformFile!.extension}");
-        print("file2.path ${platformFile!.path}");
-        print("file.path ${file!.path}");
-      } else {
-        // User canceled the picker
       }
     }
   }
@@ -93,7 +84,7 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                             child: ListView.separated(
                           itemBuilder: (context, index) {
                             if (index == 0) {
-                              if (!claudeChatModelList.isEmpty) {
+                              if (!state.claudeChatModelList.isEmpty) {
                                 return const SizedBox();
                               }
                               return const Padding(
@@ -106,7 +97,7 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                                 ),
                               );
                             } else if (index == 1) {
-                              if (!claudeChatModelList.isEmpty) {
+                              if (!state.claudeChatModelList.isEmpty) {
                                 return const SizedBox();
                               }
                               return Container(
@@ -185,23 +176,35 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                               );
                             }
                             return ClaudeChatBubble(
-                                chatModel: claudeChatModelList[index - 3]);
+                                chatModel:
+                                    state.claudeChatModelList[index - 3]);
                           },
-                          itemCount: claudeChatModelList.length + 3,
+                          itemCount: state.claudeChatModelList.length + 3,
                           separatorBuilder: (context, index) =>
                               const SizedBox(height: 20),
                         )),
                         CustomTextField(
                             textController: textEditingController,
                             onTap: () => setState(() {
-                                  print("abcde");
-                                  chatBloc.getClaudeReplyWithFile(
-                                      fileName: fileName!,
-                                      filePath: filePath!,
-                                      question: textEditingController.text);
-                                  claudeChatModelList.add(ClaudeChatModel(
-                                      role: "Human",
-                                      parts: textEditingController.text));
+                                  final claudeData = ClaudeChatModel(
+                                      content: textEditingController.text,
+                                      role: "Human");
+                                  if (state.claudeChatModelList.isEmpty) {
+                                    chatBloc
+                                        .updateClaudeModelList([claudeData]);
+                                    chatBloc.getClaudeReplyWithFile(
+                                        fileName: fileName!,
+                                        filePath: filePath!,
+                                        question: textEditingController.text);
+                                  } else {
+                                    List<ClaudeChatModel> tempList =
+                                        List.of(state.claudeChatModelList);
+                                    tempList.add(claudeData);
+                                    chatBloc.updateClaudeModelList(tempList);
+                                    chatBloc.getClaudeNextChatReply(
+                                        chatId: state.claudeChatId!,
+                                        question: textEditingController.text);
+                                  }
                                   textEditingController.clear();
                                 })),
                       ],

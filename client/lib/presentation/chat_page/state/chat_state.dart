@@ -11,8 +11,11 @@ class ChatState with _$ChatState {
     @Default([]) List<GeminiDrawerResponse> geminiDrawerData,
     @Default([]) List<GeminiChatModel> geminiChatModelList,
     @Default([]) List<ChatGPTChatModel> chatGPTChatModelList,
+    @Default([]) List<ClaudeChatModel> claudeChatModelList,
     @Default(false) bool chatgptSelected,
     String? chatGptChatId,
     String? geminiChatId,
+    String? claudeChatId,
+    String? bookHeading
   }) = _ChatState;
 }

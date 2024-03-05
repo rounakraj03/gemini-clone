@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:client/core/secure_shared_preference.dart';
+import 'package:client/network/models/claude_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/login_signUp_response_model.dart';
 import 'package:client/network/models/login_signup_request_model.dart';
@@ -28,6 +29,7 @@ class ChatRepositoryImpl extends ChatRepository {
   final geminiNewChatUrl = "gemini/new-chat";
   final chatGPTNewChatUrl = "chatgpt/new-chat";
   final claudeNewChatUrl = "claude/new-chat";
+  final claudeNextChatUrl = "claude/next-chats";
 
   final loginUrl = "user/login";
   final signupUrl = "user/signup";
@@ -189,7 +191,8 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<String> getClaudeResponseWithFileUpload(FormData formData) async {
+  Future<ClaudeNextChatResponse> getClaudeResponseWithFileUpload(
+      FormData formData) async {
     final headers = <String, String>{
       'Content-Type': 'multipart/form-data',
     };
@@ -203,8 +206,19 @@ class ChatRepositoryImpl extends ChatRepository {
       },
       options: Options(headers: headers),
     );
-    print("response => $response");
+    final result = ClaudeNextChatResponse.fromMap(response.data);
+    return result;
+  }
 
-    return response.toString();
+  @override
+  Future<ClaudeNextChatResponse> getClaudeNextChatsResponse(
+      ClaudeNextChatsRequest claudeNextChatsRequest) async {
+    final apiUrl = baseUrl + claudeNextChatUrl;
+    final response = await _dio.post(
+      apiUrl,
+      data: claudeNextChatsRequest.toJson(),
+    );
+    final result = ClaudeNextChatResponse.fromMap(response.data);
+    return result;
   }
 }

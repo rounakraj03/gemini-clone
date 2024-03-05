@@ -49,6 +49,10 @@ class ChatBloc extends Cubit<ChatState> {
     emit(state.copyWith(geminiChatModelList: value));
   }
 
+  void updateClaudeModelList(List<ClaudeChatModel> value) {
+    emit(state.copyWith(claudeChatModelList: value));
+  }
+
   void updateChatGptSelected(bool value) {
     emit(state.copyWith(chatgptSelected: value));
   }
@@ -169,15 +173,46 @@ class ChatBloc extends Cubit<ChatState> {
     emit(state.copyWith(geminiChatId: value));
   }
 
+  updateClaudechatIdValue(String? value) {
+    emit(state.copyWith(claudeChatId: value));
+  }
+
+  updateBookHeadingValue(String? value) {
+    emit(state.copyWith(bookHeading: value));
+  }
+
   getClaudeReplyWithFile(
       {required String filePath,
       required String fileName,
       required String question}) async {
-    final formData = FormData.fromMap({
-      'pdf': await MultipartFile.fromFile(filePath, filename: fileName),
-      'question': question
-    });
-    final response = await chatRepository.getClaudeResponseWithFileUpload(formData);
-    print("Res ====> ${response}");
+    // String userId = await chatRepository.getUserId();
+    String userId = "65dc4685d23b1f44f89babb1";
+    if (userId == "") {
+    } else {
+      final formData = FormData.fromMap({
+        'pdf': await MultipartFile.fromFile(filePath, filename: fileName),
+        'question': question,
+        'userId': userId
+      });
+      final response =
+          await chatRepository.getClaudeResponseWithFileUpload(formData);
+      updateClaudeModelList(response.chatHistory);
+      updateClaudechatIdValue(response.chatId);
+    }
+  }
+
+  getClaudeNextChatReply(
+      {required String chatId, required String question}) async {
+    // String userId = await chatRepository.getUserId();
+    String userId = "65dc4685d23b1f44f89babb1";
+    if (userId == "") {
+    } else {
+      final response = await chatRepository.getClaudeNextChatsResponse(
+          ClaudeNextChatsRequest(
+              chatId: chatId, question: question, userId: userId));
+      updateClaudeModelList(response.chatHistory);
+      updateClaudechatIdValue(response.chatId);
+      updateBookHeadingValue(response.heading);
+    }
   }
 }

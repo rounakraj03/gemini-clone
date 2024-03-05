@@ -24,9 +24,13 @@ mixin _$ChatState {
       throw _privateConstructorUsedError;
   List<ChatGPTChatModel> get chatGPTChatModelList =>
       throw _privateConstructorUsedError;
+  List<ClaudeChatModel> get claudeChatModelList =>
+      throw _privateConstructorUsedError;
   bool get chatgptSelected => throw _privateConstructorUsedError;
   String? get chatGptChatId => throw _privateConstructorUsedError;
   String? get geminiChatId => throw _privateConstructorUsedError;
+  String? get claudeChatId => throw _privateConstructorUsedError;
+  String? get bookHeading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ChatStateCopyWith<ChatState> get copyWith =>
@@ -43,9 +47,12 @@ abstract class $ChatStateCopyWith<$Res> {
       List<GeminiDrawerResponse> geminiDrawerData,
       List<GeminiChatModel> geminiChatModelList,
       List<ChatGPTChatModel> chatGPTChatModelList,
+      List<ClaudeChatModel> claudeChatModelList,
       bool chatgptSelected,
       String? chatGptChatId,
-      String? geminiChatId});
+      String? geminiChatId,
+      String? claudeChatId,
+      String? bookHeading});
 }
 
 /// @nodoc
@@ -65,9 +72,12 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? geminiDrawerData = null,
     Object? geminiChatModelList = null,
     Object? chatGPTChatModelList = null,
+    Object? claudeChatModelList = null,
     Object? chatgptSelected = null,
     Object? chatGptChatId = freezed,
     Object? geminiChatId = freezed,
+    Object? claudeChatId = freezed,
+    Object? bookHeading = freezed,
   }) {
     return _then(_value.copyWith(
       chatgptDrawerData: null == chatgptDrawerData
@@ -86,6 +96,10 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
           ? _value.chatGPTChatModelList
           : chatGPTChatModelList // ignore: cast_nullable_to_non_nullable
               as List<ChatGPTChatModel>,
+      claudeChatModelList: null == claudeChatModelList
+          ? _value.claudeChatModelList
+          : claudeChatModelList // ignore: cast_nullable_to_non_nullable
+              as List<ClaudeChatModel>,
       chatgptSelected: null == chatgptSelected
           ? _value.chatgptSelected
           : chatgptSelected // ignore: cast_nullable_to_non_nullable
@@ -97,6 +111,14 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
       geminiChatId: freezed == geminiChatId
           ? _value.geminiChatId
           : geminiChatId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      claudeChatId: freezed == claudeChatId
+          ? _value.claudeChatId
+          : claudeChatId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bookHeading: freezed == bookHeading
+          ? _value.bookHeading
+          : bookHeading // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -115,9 +137,12 @@ abstract class _$$ChatStateImplCopyWith<$Res>
       List<GeminiDrawerResponse> geminiDrawerData,
       List<GeminiChatModel> geminiChatModelList,
       List<ChatGPTChatModel> chatGPTChatModelList,
+      List<ClaudeChatModel> claudeChatModelList,
       bool chatgptSelected,
       String? chatGptChatId,
-      String? geminiChatId});
+      String? geminiChatId,
+      String? claudeChatId,
+      String? bookHeading});
 }
 
 /// @nodoc
@@ -135,9 +160,12 @@ class __$$ChatStateImplCopyWithImpl<$Res>
     Object? geminiDrawerData = null,
     Object? geminiChatModelList = null,
     Object? chatGPTChatModelList = null,
+    Object? claudeChatModelList = null,
     Object? chatgptSelected = null,
     Object? chatGptChatId = freezed,
     Object? geminiChatId = freezed,
+    Object? claudeChatId = freezed,
+    Object? bookHeading = freezed,
   }) {
     return _then(_$ChatStateImpl(
       chatgptDrawerData: null == chatgptDrawerData
@@ -156,6 +184,10 @@ class __$$ChatStateImplCopyWithImpl<$Res>
           ? _value._chatGPTChatModelList
           : chatGPTChatModelList // ignore: cast_nullable_to_non_nullable
               as List<ChatGPTChatModel>,
+      claudeChatModelList: null == claudeChatModelList
+          ? _value._claudeChatModelList
+          : claudeChatModelList // ignore: cast_nullable_to_non_nullable
+              as List<ClaudeChatModel>,
       chatgptSelected: null == chatgptSelected
           ? _value.chatgptSelected
           : chatgptSelected // ignore: cast_nullable_to_non_nullable
@@ -167,6 +199,14 @@ class __$$ChatStateImplCopyWithImpl<$Res>
       geminiChatId: freezed == geminiChatId
           ? _value.geminiChatId
           : geminiChatId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      claudeChatId: freezed == claudeChatId
+          ? _value.claudeChatId
+          : claudeChatId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bookHeading: freezed == bookHeading
+          ? _value.bookHeading
+          : bookHeading // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -180,13 +220,17 @@ class _$ChatStateImpl implements _ChatState {
       final List<GeminiDrawerResponse> geminiDrawerData = const [],
       final List<GeminiChatModel> geminiChatModelList = const [],
       final List<ChatGPTChatModel> chatGPTChatModelList = const [],
+      final List<ClaudeChatModel> claudeChatModelList = const [],
       this.chatgptSelected = false,
       this.chatGptChatId,
-      this.geminiChatId})
+      this.geminiChatId,
+      this.claudeChatId,
+      this.bookHeading})
       : _chatgptDrawerData = chatgptDrawerData,
         _geminiDrawerData = geminiDrawerData,
         _geminiChatModelList = geminiChatModelList,
-        _chatGPTChatModelList = chatGPTChatModelList;
+        _chatGPTChatModelList = chatGPTChatModelList,
+        _claudeChatModelList = claudeChatModelList;
 
   final List<ChatGPTDrawerResponse> _chatgptDrawerData;
   @override
@@ -228,6 +272,16 @@ class _$ChatStateImpl implements _ChatState {
     return EqualUnmodifiableListView(_chatGPTChatModelList);
   }
 
+  final List<ClaudeChatModel> _claudeChatModelList;
+  @override
+  @JsonKey()
+  List<ClaudeChatModel> get claudeChatModelList {
+    if (_claudeChatModelList is EqualUnmodifiableListView)
+      return _claudeChatModelList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_claudeChatModelList);
+  }
+
   @override
   @JsonKey()
   final bool chatgptSelected;
@@ -235,10 +289,14 @@ class _$ChatStateImpl implements _ChatState {
   final String? chatGptChatId;
   @override
   final String? geminiChatId;
+  @override
+  final String? claudeChatId;
+  @override
+  final String? bookHeading;
 
   @override
   String toString() {
-    return 'ChatState(chatgptDrawerData: $chatgptDrawerData, geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, chatGPTChatModelList: $chatGPTChatModelList, chatgptSelected: $chatgptSelected, chatGptChatId: $chatGptChatId, geminiChatId: $geminiChatId)';
+    return 'ChatState(chatgptDrawerData: $chatgptDrawerData, geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, chatGPTChatModelList: $chatGPTChatModelList, claudeChatModelList: $claudeChatModelList, chatgptSelected: $chatgptSelected, chatGptChatId: $chatGptChatId, geminiChatId: $geminiChatId, claudeChatId: $claudeChatId, bookHeading: $bookHeading)';
   }
 
   @override
@@ -254,12 +312,18 @@ class _$ChatStateImpl implements _ChatState {
                 .equals(other._geminiChatModelList, _geminiChatModelList) &&
             const DeepCollectionEquality()
                 .equals(other._chatGPTChatModelList, _chatGPTChatModelList) &&
+            const DeepCollectionEquality()
+                .equals(other._claudeChatModelList, _claudeChatModelList) &&
             (identical(other.chatgptSelected, chatgptSelected) ||
                 other.chatgptSelected == chatgptSelected) &&
             (identical(other.chatGptChatId, chatGptChatId) ||
                 other.chatGptChatId == chatGptChatId) &&
             (identical(other.geminiChatId, geminiChatId) ||
-                other.geminiChatId == geminiChatId));
+                other.geminiChatId == geminiChatId) &&
+            (identical(other.claudeChatId, claudeChatId) ||
+                other.claudeChatId == claudeChatId) &&
+            (identical(other.bookHeading, bookHeading) ||
+                other.bookHeading == bookHeading));
   }
 
   @override
@@ -269,9 +333,12 @@ class _$ChatStateImpl implements _ChatState {
       const DeepCollectionEquality().hash(_geminiDrawerData),
       const DeepCollectionEquality().hash(_geminiChatModelList),
       const DeepCollectionEquality().hash(_chatGPTChatModelList),
+      const DeepCollectionEquality().hash(_claudeChatModelList),
       chatgptSelected,
       chatGptChatId,
-      geminiChatId);
+      geminiChatId,
+      claudeChatId,
+      bookHeading);
 
   @JsonKey(ignore: true)
   @override
@@ -286,9 +353,12 @@ abstract class _ChatState implements ChatState {
       final List<GeminiDrawerResponse> geminiDrawerData,
       final List<GeminiChatModel> geminiChatModelList,
       final List<ChatGPTChatModel> chatGPTChatModelList,
+      final List<ClaudeChatModel> claudeChatModelList,
       final bool chatgptSelected,
       final String? chatGptChatId,
-      final String? geminiChatId}) = _$ChatStateImpl;
+      final String? geminiChatId,
+      final String? claudeChatId,
+      final String? bookHeading}) = _$ChatStateImpl;
 
   @override
   List<ChatGPTDrawerResponse> get chatgptDrawerData;
@@ -299,11 +369,17 @@ abstract class _ChatState implements ChatState {
   @override
   List<ChatGPTChatModel> get chatGPTChatModelList;
   @override
+  List<ClaudeChatModel> get claudeChatModelList;
+  @override
   bool get chatgptSelected;
   @override
   String? get chatGptChatId;
   @override
   String? get geminiChatId;
+  @override
+  String? get claudeChatId;
+  @override
+  String? get bookHeading;
   @override
   @JsonKey(ignore: true)
   _$$ChatStateImplCopyWith<_$ChatStateImpl> get copyWith =>
