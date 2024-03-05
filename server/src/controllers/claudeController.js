@@ -1,8 +1,7 @@
 import { BedrockRuntime } from "@aws-sdk/client-bedrock-runtime";
 import multer from "multer";
-import pkg from "pdf-to-text";
+import pdfToText from "pdf-to-text";
 import claudeHistoryModel from "../models/claude_history_model.js";
-const { info, pdfToText } = pkg;
 
 
 const textDecoder = new TextDecoder("utf-8");
@@ -79,7 +78,7 @@ const claudeReply = async ({pdf_path, question}) => {
     try {
         return new Promise((resolve, reject) => {
             let pages = 0;
-            info(pdf_path, function(err, info) {
+            pdfToText.info(pdf_path, function(err, info) {
                 if (err) {
                     reject (err);
                 } else {
@@ -89,7 +88,7 @@ const claudeReply = async ({pdf_path, question}) => {
                             pages = 100;
                         }
                         var option = {from: 0, to: pages};
-                        pdfToText(pdf_path, option, async function(err, data) {
+                        pdfToText.pdfToText(pdf_path, option, async function(err, data) {
                             if (err) {
                                 reject(err);
                             } else {
@@ -128,6 +127,7 @@ const getTextClaude = async (prompt) => {
     
         const params = {
             modelId: "anthropic.claude-v2:1",
+            // modelId: "anthropic.claude-3-sonnet-20240229-v1:0",
             contentType: "application/json",
             accept: "application/json",
             body: JSON.stringify({
