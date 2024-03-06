@@ -22,6 +22,10 @@ class ClaudeBloc extends Cubit<ClaudeState> {
     getDrawerData();
   }
 
+  logOut() async {
+    await chatRepository.logOut();
+  }
+
   getEmailId() async {
     String email = await chatRepository.getEmail();
     emit(state.copyWith(emailId: email));

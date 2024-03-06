@@ -2,6 +2,7 @@ import 'package:client/di/di.dart';
 import 'package:client/presentation/chatgpt_page/view/chatgpt_screen.dart';
 import 'package:client/presentation/login_page/view/login_screen.dart';
 import 'package:client/core/snack_bar.dart';
+import 'package:client/res/app_colors.dart';
 import 'package:client/routes/router.dart';
 import 'package:flutter/material.dart';
 
@@ -32,10 +33,20 @@ class MyApp extends StatelessWidget {
           future: loginBloc.isUserLoggedIn(),
           builder: (context, snapshot) {
             print("snapshot + $snapshot");
-            if (snapshot.data != null) {
-              return const ChatgptScreen();
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.data == true) {
+                return const ChatgptScreen();
+              } else {
+                return const LoginScreen();
+              }
             } else {
-              return const LoginScreen();
+              print("I am waiting");
+              return Container(
+                color: AppColors.desertStorm,
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.deepOrange),
+                ),
+              );
             }
           },
         ));

@@ -37,7 +37,10 @@ abstract class ChatRepository {
   Future<String> getEmail();
 
   Future<bool> getUserLogin();
+
   Future<void> saveUserLogin(bool value);
+  
+  Future<void> logOut();
 
   Future<ClaudeNextChatResponse> getClaudeResponseWithFileUpload(
       FormData formData);

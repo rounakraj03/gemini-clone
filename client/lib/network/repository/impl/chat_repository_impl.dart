@@ -9,6 +9,7 @@ import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/models/new_chat_response.dart';
 import 'package:client/network/network_response/network_error.dart';
 import 'package:client/network/repository/chat_repository.dart';
+import 'package:client/routes/routes.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -204,6 +205,13 @@ class ChatRepositoryImpl extends ChatRepository {
   Future<String> getEmail() async {
     final value = await securedSharedPreference.secureGetString("email");
     return value;
+  }
+
+  @override
+  Future<void> logOut() async {
+    await securedSharedPreference.clearAll();
+    await securedSharedPreference.setBool("loginStatus", false);
+    LoginRoute().pushReplacement();
   }
 
   @override

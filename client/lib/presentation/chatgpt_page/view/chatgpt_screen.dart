@@ -8,7 +8,6 @@ import 'package:client/res/chatGPT_chat_bubble.dart';
 import 'package:client/res/custom_appBar.dart';
 import 'package:client/res/custom_textfield_controller.dart';
 import 'package:client/routes/route_data.dart';
-import 'package:client/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -130,7 +129,7 @@ class ChatgptDrawerWidget extends StatelessWidget {
                                         color: AppColors.desertStorm,
                                       ),
                                       onPressed: () {
-                                        print("LogOut");
+                                        chatgptBloc.logOut();
                                       },
                                     ),
                                   ),
@@ -171,115 +170,6 @@ class ChatgptDrawerWidget extends StatelessWidget {
               },
             ),
           );
-        },
-      ),
-    );
-  }
-}
-
-class ChatgptAppBarWidget extends StatelessWidget {
-  const ChatgptAppBarWidget({super.key});
-
-  final selectedImageSize = 40.0;
-  final unselectedImageSize = 30.0;
-  final selectedPaddingSize = 10.0;
-  final unselectedPaddingSize = 5.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: chatgptBloc,
-      child: BlocBuilder<ChatgptBloc, ChatgptState>(
-        builder: (context, state) {
-          return CustomAppBar(
-              customAppBarAttribute: CustomAppBarAttribute(
-                  appBarSideWidgets: AppBarSideWidgets(
-            leading: Row(
-              children: [
-                InkWell(
-                  onTapDown: (details) {
-                    ChatgptRoute().push();
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          unselectedPaddingSize,
-                        ),
-                        decoration: BoxDecoration(
-                            color: AppColors.desertStorm,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Image.asset(
-                          Assets.chatGPTLogo2,
-                          height: unselectedImageSize,
-                          width: unselectedImageSize,
-                          fit: BoxFit.cover,
-                          color: AppColors.scaffoldBgColor,
-                        ),
-                      ),
-                      const Text(
-                        "ChatGpt",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.desertStorm),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                InkWell(
-                  onTapDown: (details) {
-                    GeminiRoute().push();
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          selectedPaddingSize,
-                        ),
-                        decoration: BoxDecoration(
-                            color: AppColors.desertStorm,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Image.asset(
-                          Assets.bardLogo,
-                          height: selectedImageSize,
-                          width: selectedImageSize,
-                          fit: BoxFit.cover,
-                          color: AppColors.scaffoldBgColor,
-                        ),
-                      ),
-                      const Text(
-                        "Gemini",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.desertStorm),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            trailing: SizedBox(
-              width: 80,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.menu_rounded,
-                  size: 35,
-                  color: AppColors.desertStorm,
-                ),
-                onPressed: () {
-                  chatgptBloc.getDrawerData();
-                  chatgptBloc.scaffoldKey.currentState?.openDrawer();
-                },
-              ),
-            ),
-          )));
         },
       ),
     );

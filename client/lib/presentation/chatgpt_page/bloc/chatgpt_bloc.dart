@@ -21,6 +21,10 @@ class ChatgptBloc extends Cubit<ChatgptState> {
     updateChatGPTchatIdValue(null);
   }
 
+  logOut() async {
+    await chatRepository.logOut();
+  }
+
   getEmailId() async {
     String email = await chatRepository.getEmail();
     emit(state.copyWith(emailId: email));

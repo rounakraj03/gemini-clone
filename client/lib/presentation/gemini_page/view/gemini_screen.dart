@@ -130,7 +130,7 @@ class GeminiDrawerWidget extends StatelessWidget {
                                         color: AppColors.desertStorm,
                                       ),
                                       onPressed: () {
-                                        print("LogOut");
+                                        geminiBloc.logOut();
                                       },
                                     ),
                                   ),
@@ -171,116 +171,6 @@ class GeminiDrawerWidget extends StatelessWidget {
               },
             ),
           );
-        },
-      ),
-    );
-  }
-}
-
-class GeminiAppBarWidget extends StatelessWidget {
-  const GeminiAppBarWidget({super.key});
-
-  final selectedImageSize = 40.0;
-  final unselectedImageSize = 30.0;
-  final selectedPaddingSize = 10.0;
-  final unselectedPaddingSize = 5.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: geminiBloc,
-      child: BlocBuilder<GeminiBloc, GeminiState>(
-        builder: (context, state) {
-          return CustomAppBar(
-              customAppBarAttribute: CustomAppBarAttribute(
-                  appBarSideWidgets: AppBarSideWidgets(
-            leading: Row(
-              children: [
-                InkWell(
-                  onTapDown: (details) {
-                    ChatgptRoute().push();
-                    // chatBloc.updateChatGptSelected(true);
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          unselectedPaddingSize,
-                        ),
-                        decoration: BoxDecoration(
-                            color: AppColors.desertStorm,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Image.asset(
-                          Assets.chatGPTLogo2,
-                          height: unselectedImageSize,
-                          width: unselectedImageSize,
-                          fit: BoxFit.cover,
-                          color: AppColors.scaffoldBgColor,
-                        ),
-                      ),
-                      const Text(
-                        "ChatGpt",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.desertStorm),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                InkWell(
-                  onTapDown: (details) {
-                    GeminiRoute().push();
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          selectedPaddingSize,
-                        ),
-                        decoration: BoxDecoration(
-                            color: AppColors.desertStorm,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Image.asset(
-                          Assets.bardLogo,
-                          height: selectedImageSize,
-                          width: selectedImageSize,
-                          fit: BoxFit.cover,
-                          color: AppColors.scaffoldBgColor,
-                        ),
-                      ),
-                      const Text(
-                        "Gemini",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.desertStorm),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            trailing: SizedBox(
-              width: 80,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.menu_rounded,
-                  size: 35,
-                  color: AppColors.desertStorm,
-                ),
-                onPressed: () {
-                  geminiBloc.getDrawerData();
-                  geminiBloc.scaffoldKey.currentState?.openDrawer();
-                },
-              ),
-            ),
-          )));
         },
       ),
     );
