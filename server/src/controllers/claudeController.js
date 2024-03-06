@@ -22,32 +22,64 @@ const newChat = async (req, res, next) => {
         upload.single('pdf')(req, res, async (err) => {
             if (err instanceof multer.MulterError) {
                 // A Multer error occurred when uploading.
-                return res.status(400).json({ error: 'File upload error' });
+                return res.status(400).json({ status: 400,
+                    errorMessage: 'File upload error' });
             } else if (err) {
                 // An unknown error occurred when uploading.
-                return res.status(500).json({ error: 'Unknown error occurred' });
+                return res.status(500).json({ status: 400,
+                    errorMessage: 'Unknown error occurred' });
             }
             console.log("req", req.body.question);
         const  {question, userId} = req.body;
         if(!req.file || !question || !userId) {
-            return res.status(400).json({error: 'No file uploaded or no question sent or No userId found'});
+            return res.status(400).json({
+                status: 400,
+                errorMessage: 'No file uploaded or no question sent or No userId found'});
         }
         console.log('file uploaded',req.file.path);
         console.log('question:', question);
-        const responseData = await claudeReply({pdf_path: req.file.path, question: question});
-        if(responseData) {
+        const responseData = await claudeReply({pdf_path: req.file.path, question: question})
+        .then(async (value) => {
             const fileHeading = (req.file.path).split("-rounak-")[1];
-            const result = await addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{role: "Human", content: question}, {role:"Assistant", content: responseData["response"]}], filename: fileHeading});
+            const result = await addOrUpdateChatHistory({userId: userId, bookData: value["bookData"], chatHistory: [{role: "Human", content: question}, {role:"Assistant", content: value["response"]}], filename: fileHeading});
             res.status(200).send({
                 userId: result["userId"],
                 chatHistory: result["chatHistory"]  ,
                 chatId: result["_id"]    
             });
-        }
+        })
+        .catch((errValue) => {
+            return res.status(400).json({
+                status: 400,
+                errorMessage: errValue});
+        });
+        // .catch((e) => {
+        //     if(e.name == "ValidationException") {
+        //         return res.status(400).json({
+        //             status: 400,
+        //             errorMessage: e.name});
+        //     }
+        //     return res.status(400).json({
+        //         status: 400,
+        //         errorMessage: e});
+        // });
+        // if(responseData) {
+        //     const fileHeading = (req.file.path).split("-rounak-")[1];
+        //     const result = await addOrUpdateChatHistory({userId: userId, bookData: responseData["bookData"], chatHistory: [{role: "Human", content: question}, {role:"Assistant", content: responseData["response"]}], filename: fileHeading});
+        //     res.status(200).send({
+        //         userId: result["userId"],
+        //         chatHistory: result["chatHistory"]  ,
+        //         chatId: result["_id"]    
+        //     });
+        // }
         }); 
     } catch (error) {
-    res.status(406);
-    next(error);        
+        console.log("ewwwwaaa");
+        return res.status(400).json({
+            status: 400,
+            errorMessage: error});
+    // res.status(406);
+    // next(error);        
     }
 };
 
@@ -84,23 +116,22 @@ const claudeReply = async ({pdf_path, question}) => {
                 } else {
                     pages  = info["pages"];
                     if(pages) {
-                        if(pages > 100){
-                            pages = 100;
-                        }
+                        // if(pages > 100){
+                        //     pages = 100;
+                        // }
                         var option = {from: 0, to: pages};
                         pdfToText.pdfToText(pdf_path, option, async function(err, data) {
                             if (err) {
                                 reject(err);
                             } else {
-                                try {
                                     const prompt = data + "\n\n " + question;
-                                    const response = await getTextClaude(prompt);
-                                    resolve({bookData: data, response: response});    
-                                } catch (error) {
-                                    console.log("abcc");
+                                    const response = await getTextClaude(prompt)
+                                    .then((data2) => {
+                                        resolve({bookData: data, response: data2});    
+                                    }).catch((error) => {
                                     reject(error);
+                                    });
                                 }
-                            }
                         });
                     } else {
                         reject ('No Page Found');
@@ -109,49 +140,57 @@ const claudeReply = async ({pdf_path, question}) => {
             })
         });
     } catch (error) {
-        console.log("abccffff");
-        throw new Error(error);
+        return Promise.reject(error);
     }
 }
 
 
 const getTextClaude = async (prompt) => {
+        return new Promise(async (resolve, reject) => {
     try {
-        const bedrock = new BedrockRuntime({
-            credentials: {
-                accessKeyId: process.env.AWS_ACCESS_KEY,
-                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-            },
-            region: "us-east-1"
-        });
-    
-        const params = {
-            modelId: "anthropic.claude-v2:1",
-            // modelId: "anthropic.claude-3-sonnet-20240229-v1:0",
-            contentType: "application/json",
-            accept: "application/json",
-            body: JSON.stringify({
-                prompt:`\n\nHuman: ${prompt} \n\nAssistant:\n`,
-                max_tokens_to_sample: 120000,
-                // max_tokens_to_sample: 2048,
-                temperature: 0.7,
-                top_k: 250,
-                top_p: 1,
-                // stop_sequence: ["\\n\\nHuman:"],q
-            }),
-        };
-    
+
+            const bedrock = new BedrockRuntime({
+                credentials: {
+                    accessKeyId: process.env.AWS_ACCESS_KEY,
+                    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+                },
+                region: "us-east-1"
+            });
+
+            const params = {
+                modelId: "anthropic.claude-v2:1",
+                // modelId: "anthropic.claude-3-sonnet-20240229-v1:0",
+                contentType: "application/json",
+                accept: "application/json",
+                body: JSON.stringify({
+                    prompt:`\n\nHuman: ${prompt} \n\nAssistant:\n`,
+                    max_tokens_to_sample: 130000,
+                    // anthropic_version: "bedrock-2023-05-31",
+                    // max_tokens_to_sample: 2048,
+                    temperature: 0.7,
+                    top_k: 250,
+                    top_p: 1,
+                    // stop_sequence: ["\\n\\nHuman:"],q
+                }),
+            };
+
+
         const data = await bedrock.invokeModel(params);
     
         if(!data) {
-            throw new Error("AWS Bedrock Clause Error");
+            reject("AWS Bedrock Clause Error");
         } else {
             const response_body = JSON.parse(textDecoder.decode(data.body));
-            return response_body.completion;
-        }    
+            resolve(response_body.completion);
+        }   
     } catch (error) {
-        throw error;
-    }
+        if(error.name == "ValidationException") {
+            reject (error.name);
+        } else {
+            reject(error);
+        }
+    }  
+    });
 }
 
 
