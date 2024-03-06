@@ -19,6 +19,7 @@ class LoginBloc extends Cubit<LoginState> {
       if (loginInfo.id != "") {
         chatRepository.saveUserId(loginInfo.id);
         chatRepository.saveEmail(email);
+        chatRepository.saveUserLogin(true);
         onSuccess(loginInfo.id);
       }
     } else {
@@ -27,6 +28,7 @@ class LoginBloc extends Cubit<LoginState> {
       if (signUpInfo.id != "") {
         chatRepository.saveUserId(signUpInfo.id);
         chatRepository.saveEmail(email);
+        chatRepository.saveUserLogin(true);
         onSuccess(signUpInfo.id);
       }
     }
@@ -34,5 +36,10 @@ class LoginBloc extends Cubit<LoginState> {
 
   updateLoginSelectedValue(bool value) {
     emit(state.copyWith(isLoginSelected: value));
+  }
+
+  Future<bool> isUserLoggedIn() async {
+    bool value = await chatRepository.getUserLogin();
+    return value;
   }
 }

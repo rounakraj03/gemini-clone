@@ -1,5 +1,5 @@
 import 'package:client/di/di.dart';
-import 'package:client/presentation/claude_page/view/claude_screen.dart';
+import 'package:client/presentation/chatgpt_page/view/chatgpt_screen.dart';
 import 'package:client/presentation/login_page/view/login_screen.dart';
 import 'package:client/core/snack_bar.dart';
 import 'package:client/routes/router.dart';
@@ -17,19 +17,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rounak AI',
-      debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: scaffoldMessenger.scaffoldMessengerKey,
-      initialRoute: NavigationHandler.initialRoute,
-      onGenerateRoute: NavigationHandler.onGenerate,
-      navigatorKey: NavigationHandler.navigatorKey,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: const ChatScreen(),
-      home: const LoginScreen(),
-      // home: const ClaudeScreen(),
-    );
+        title: 'Rounak AI',
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: scaffoldMessenger.scaffoldMessengerKey,
+        initialRoute: NavigationHandler.initialRoute,
+        onGenerateRoute: NavigationHandler.onGenerate,
+        navigatorKey: NavigationHandler.navigatorKey,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        // home: const ChatScreen(),
+        home: FutureBuilder(
+          future: loginBloc.isUserLoggedIn(),
+          builder: (context, snapshot) {
+            print("snapshot + $snapshot");
+            if (snapshot.data != null) {
+              return const ChatgptScreen();
+            } else {
+              return const LoginScreen();
+            }
+          },
+        ));
   }
 }

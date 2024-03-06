@@ -237,4 +237,15 @@ class ChatRepositoryImpl extends ChatRepository {
     final result = ClaudeNextChatResponse.fromMap(response.data);
     return result;
   }
+
+  @override
+  Future<bool> getUserLogin() async {
+    bool value = await securedSharedPreference.getBool("loginStatus");
+    return value;
+  }
+
+  @override
+  Future<void> saveUserLogin(bool value) async {
+    await securedSharedPreference.setBool("loginStatus", value);
+  }
 }

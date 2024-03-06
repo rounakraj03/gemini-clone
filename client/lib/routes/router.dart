@@ -24,7 +24,7 @@ class NavigationHandler {
 
   static Route _getRoute(RouteData routeParam) {
     print("Navigating to ${routeParam.routeName} args: ${routeParam}");
-    return CupertinoPageRoute(
+    return MaterialPageRoute(
       builder: (context) {
         return routeParam.build(context);
       },

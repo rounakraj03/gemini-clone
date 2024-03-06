@@ -1,5 +1,6 @@
-import 'package:client/presentation/chat_page/view/chat_screen.dart';
+import 'package:client/presentation/chatgpt_page/view/chatgpt_screen.dart';
 import 'package:client/presentation/claude_page/view/claude_screen.dart';
+import 'package:client/presentation/gemini_page/view/gemini_screen.dart';
 import 'package:client/presentation/login_page/view/login_screen.dart';
 import 'package:client/routes/route_data.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +15,6 @@ class LoginRoute extends RouteData {
   String get routeName => "/";
 }
 
-class ChatRoute extends RouteData {
-  @override
-  Widget build(BuildContext context) {
-    return const ChatScreen();
-  }
-
-  @override
-  String get routeName => "/chat";
-}
-
 class ClaudeRoute extends RouteData {
   @override
   Widget build(BuildContext context) {
@@ -32,4 +23,24 @@ class ClaudeRoute extends RouteData {
 
   @override
   String get routeName => "/claude";
+}
+
+class ChatgptRoute extends RouteData {
+  @override
+  Widget build(BuildContext context) {
+    return const ChatgptScreen();
+  }
+
+  @override
+  String get routeName => "/chatgpt";
+}
+
+class GeminiRoute extends RouteData {
+  @override
+  Widget build(BuildContext context) {
+    return const GeminiScreen();
+  }
+
+  @override
+  String get routeName => "/gemini";
 }

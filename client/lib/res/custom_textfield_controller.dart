@@ -1,8 +1,5 @@
-import 'package:client/presentation/chat_page/bloc/chat_bloc.dart';
-import 'package:client/presentation/chat_page/state/chat_state.dart';
 import 'package:client/res/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomTextField extends StatefulWidget {
   final textController;

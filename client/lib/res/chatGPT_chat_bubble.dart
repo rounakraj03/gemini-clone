@@ -3,9 +3,9 @@ import 'package:client/res/app_colors.dart';
 import 'package:client/res/assets.dart';
 import 'package:flutter/material.dart';
 
-class ChatGPTchatBubble extends StatelessWidget {
+class ChatgptChatBubble extends StatelessWidget {
   final ChatGPTChatModel chatModel;
-  const ChatGPTchatBubble({required this.chatModel, super.key});
+  const ChatgptChatBubble({required this.chatModel, super.key});
 
   @override
   Widget build(BuildContext context) {

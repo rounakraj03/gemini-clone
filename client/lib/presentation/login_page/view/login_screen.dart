@@ -1,5 +1,4 @@
 import 'package:client/di/di.dart';
-import 'package:client/presentation/chat_page/view/chat_screen.dart';
 import 'package:client/presentation/login_page/bloc/login_bloc.dart';
 import 'package:client/presentation/login_page/state/login_state.dart';
 import 'package:client/res/app_colors.dart';

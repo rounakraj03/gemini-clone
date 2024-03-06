@@ -11,6 +11,7 @@ import 'package:client/res/claude_chat_bubble.dart';
 import 'package:client/res/custom_appBar.dart';
 import 'package:client/res/custom_textfield_controller.dart';
 import 'package:client/routes/route_data.dart';
+import 'package:client/routes/routes.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
           drawer: const ClaudeDrawerWidget(),
           body: Column(
             children: [
-              const ClaudeAppBarWidget(),
+              CustomChatAppBar(selectedIndex: 3),
               Expanded(child: BackCardOnTopView(
                 child: BlocBuilder<ClaudeBloc, ClaudeState>(
                   builder: (context, state) {
@@ -209,6 +210,7 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                                         question: textEditingController.text);
                                   }
                                   textEditingController.clear();
+                                  FocusScope.of(context).unfocus();
                                 })),
                       ],
                     );
@@ -335,7 +337,7 @@ class ClaudeAppBarWidget extends StatelessWidget {
               children: [
                 InkWell(
                   onTapDown: (details) {
-                    // chatBloc.updateChatGptSelected(true);
+                    ChatgptRoute().push();
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -370,7 +372,7 @@ class ClaudeAppBarWidget extends StatelessWidget {
                 ),
                 InkWell(
                   onTapDown: (details) {
-                    print("geminichatId=>");
+                    GeminiRoute().push();
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,

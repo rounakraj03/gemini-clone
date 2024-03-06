@@ -3,7 +3,6 @@ import 'package:client/network/models/chat_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
 import 'package:client/network/repository/chat_repository.dart';
-import 'package:client/presentation/chat_page/state/chat_state.dart';
 import 'package:client/presentation/claude_page/state/claude_state.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
