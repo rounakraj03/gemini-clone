@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:client/core/app_loader.dart';
 import 'package:client/network/models/chat_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
@@ -87,10 +88,13 @@ class ClaudeBloc extends Cubit<ClaudeState> {
         'question': question,
         'userId': userId
       });
+      AppLoader.showLoader();
       final response =
           await chatRepository.getClaudeResponseWithFileUpload(formData);
+      AppLoader.dismissLoader();
       updateClaudeModelList(response.chatHistory);
       updateClaudechatIdValue(response.chatId);
+      scrollToBottom();
     }
   }
 
@@ -100,12 +104,15 @@ class ClaudeBloc extends Cubit<ClaudeState> {
     if (userId == "") {
       logOut();
     } else {
+      AppLoader.showLoader();
       final response = await chatRepository.getClaudeNextChatsResponse(
           ClaudeNextChatsRequest(
               chatId: chatId, question: question, userId: userId));
+      AppLoader.dismissLoader();
       updateClaudeModelList(response.chatHistory);
       updateClaudechatIdValue(response.chatId);
       updateBookHeadingValue(response.heading);
+      scrollToBottom();
     }
   }
 }

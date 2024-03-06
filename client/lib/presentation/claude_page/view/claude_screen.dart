@@ -84,6 +84,7 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                       children: [
                         Expanded(
                             child: ListView.separated(
+                          controller: claudeBloc.scrollController,
                           itemBuilder: (context, index) {
                             if (index == 0) {
                               if (state.claudeChatModelList.isNotEmpty) {

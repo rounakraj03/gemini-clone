@@ -228,11 +228,7 @@ class ChatRepositoryImpl extends ChatRepository {
       onSendProgress: (sent, total) {
         final progress = (sent / total);
         print('Upload progress: $progress%');
-        if (progress >= 1.0) {
-          AppLoader.dismissLoader();
-        } else {
-          AppLoader.showUploadStatus(value: progress, status: "Uploading");
-        }
+        AppLoader.showUploadStatus(value: progress, status: "Uploading");
       },
       options: Options(headers: headers),
     );
