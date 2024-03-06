@@ -54,6 +54,7 @@ class _GeminiScreenState extends State<GeminiScreen> {
                       itemCount: state.geminiChatModelList.length,
                     )),
                     CustomTextField(
+                      canSendMessage: state.canSendMessage,
                       textController: textEditingController,
                       onTap: () {
                         if (textEditingController.text.isNotEmpty) {
@@ -150,6 +151,7 @@ class GeminiDrawerWidget extends StatelessWidget {
                         leading: const Icon(Icons.add_circle_outline),
                         title: const Text("New Chat"),
                         onTap: () {
+                          geminiBloc.updateCanSendValue(true);
                           geminiBloc.updateGeminichatIdValue(null);
                           geminiBloc.setDefaultGeminiChatModelList();
                           RouteData.pop();

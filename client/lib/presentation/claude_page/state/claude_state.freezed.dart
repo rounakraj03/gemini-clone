@@ -23,6 +23,7 @@ mixin _$ClaudeState {
   String get emailId => throw _privateConstructorUsedError;
   String? get claudeChatId => throw _privateConstructorUsedError;
   String? get bookHeading => throw _privateConstructorUsedError;
+  bool get canSendMessage => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ClaudeStateCopyWith<ClaudeState> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $ClaudeStateCopyWith<$Res> {
       List<ClaudeDrawerResponse> claudeDrawerData,
       String emailId,
       String? claudeChatId,
-      String? bookHeading});
+      String? bookHeading,
+      bool canSendMessage});
 }
 
 /// @nodoc
@@ -61,6 +63,7 @@ class _$ClaudeStateCopyWithImpl<$Res, $Val extends ClaudeState>
     Object? emailId = null,
     Object? claudeChatId = freezed,
     Object? bookHeading = freezed,
+    Object? canSendMessage = null,
   }) {
     return _then(_value.copyWith(
       claudeChatModelList: null == claudeChatModelList
@@ -83,6 +86,10 @@ class _$ClaudeStateCopyWithImpl<$Res, $Val extends ClaudeState>
           ? _value.bookHeading
           : bookHeading // ignore: cast_nullable_to_non_nullable
               as String?,
+      canSendMessage: null == canSendMessage
+          ? _value.canSendMessage
+          : canSendMessage // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -100,7 +107,8 @@ abstract class _$$ClaudeStateImplCopyWith<$Res>
       List<ClaudeDrawerResponse> claudeDrawerData,
       String emailId,
       String? claudeChatId,
-      String? bookHeading});
+      String? bookHeading,
+      bool canSendMessage});
 }
 
 /// @nodoc
@@ -119,6 +127,7 @@ class __$$ClaudeStateImplCopyWithImpl<$Res>
     Object? emailId = null,
     Object? claudeChatId = freezed,
     Object? bookHeading = freezed,
+    Object? canSendMessage = null,
   }) {
     return _then(_$ClaudeStateImpl(
       claudeChatModelList: null == claudeChatModelList
@@ -141,6 +150,10 @@ class __$$ClaudeStateImplCopyWithImpl<$Res>
           ? _value.bookHeading
           : bookHeading // ignore: cast_nullable_to_non_nullable
               as String?,
+      canSendMessage: null == canSendMessage
+          ? _value.canSendMessage
+          : canSendMessage // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -153,7 +166,8 @@ class _$ClaudeStateImpl implements _ClaudeState {
       final List<ClaudeDrawerResponse> claudeDrawerData = const [],
       this.emailId = "",
       this.claudeChatId,
-      this.bookHeading})
+      this.bookHeading,
+      this.canSendMessage = true})
       : _claudeChatModelList = claudeChatModelList,
         _claudeDrawerData = claudeDrawerData;
 
@@ -184,10 +198,13 @@ class _$ClaudeStateImpl implements _ClaudeState {
   final String? claudeChatId;
   @override
   final String? bookHeading;
+  @override
+  @JsonKey()
+  final bool canSendMessage;
 
   @override
   String toString() {
-    return 'ClaudeState(claudeChatModelList: $claudeChatModelList, claudeDrawerData: $claudeDrawerData, emailId: $emailId, claudeChatId: $claudeChatId, bookHeading: $bookHeading)';
+    return 'ClaudeState(claudeChatModelList: $claudeChatModelList, claudeDrawerData: $claudeDrawerData, emailId: $emailId, claudeChatId: $claudeChatId, bookHeading: $bookHeading, canSendMessage: $canSendMessage)';
   }
 
   @override
@@ -203,7 +220,9 @@ class _$ClaudeStateImpl implements _ClaudeState {
             (identical(other.claudeChatId, claudeChatId) ||
                 other.claudeChatId == claudeChatId) &&
             (identical(other.bookHeading, bookHeading) ||
-                other.bookHeading == bookHeading));
+                other.bookHeading == bookHeading) &&
+            (identical(other.canSendMessage, canSendMessage) ||
+                other.canSendMessage == canSendMessage));
   }
 
   @override
@@ -213,7 +232,8 @@ class _$ClaudeStateImpl implements _ClaudeState {
       const DeepCollectionEquality().hash(_claudeDrawerData),
       emailId,
       claudeChatId,
-      bookHeading);
+      bookHeading,
+      canSendMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -228,7 +248,8 @@ abstract class _ClaudeState implements ClaudeState {
       final List<ClaudeDrawerResponse> claudeDrawerData,
       final String emailId,
       final String? claudeChatId,
-      final String? bookHeading}) = _$ClaudeStateImpl;
+      final String? bookHeading,
+      final bool canSendMessage}) = _$ClaudeStateImpl;
 
   @override
   List<ClaudeChatModel> get claudeChatModelList;
@@ -240,6 +261,8 @@ abstract class _ClaudeState implements ClaudeState {
   String? get claudeChatId;
   @override
   String? get bookHeading;
+  @override
+  bool get canSendMessage;
   @override
   @JsonKey(ignore: true)
   _$$ClaudeStateImplCopyWith<_$ClaudeStateImpl> get copyWith =>

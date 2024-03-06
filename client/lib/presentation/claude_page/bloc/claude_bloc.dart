@@ -27,6 +27,10 @@ class ClaudeBloc extends Cubit<ClaudeState> {
     await chatRepository.logOut();
   }
 
+  updateCanSendValue(bool value) {
+    emit(state.copyWith(canSendMessage: value));
+  }
+
   getEmailId() async {
     String email = await chatRepository.getEmail();
     emit(state.copyWith(emailId: email));
@@ -89,8 +93,10 @@ class ClaudeBloc extends Cubit<ClaudeState> {
         'userId': userId
       });
       AppLoader.showLoader();
+      updateCanSendValue(false);
       final response =
           await chatRepository.getClaudeResponseWithFileUpload(formData);
+      updateCanSendValue(true);
       AppLoader.dismissLoader();
       updateClaudeModelList(response.chatHistory);
       updateClaudechatIdValue(response.chatId);
@@ -105,10 +111,12 @@ class ClaudeBloc extends Cubit<ClaudeState> {
       logOut();
     } else {
       AppLoader.showLoader();
+      updateCanSendValue(false);
       final response = await chatRepository.getClaudeNextChatsResponse(
           ClaudeNextChatsRequest(
               chatId: chatId, question: question, userId: userId));
       AppLoader.dismissLoader();
+      updateCanSendValue(true);
       updateClaudeModelList(response.chatHistory);
       updateClaudechatIdValue(response.chatId);
       updateBookHeadingValue(response.heading);

@@ -22,6 +22,7 @@ mixin _$ChatgptState {
       throw _privateConstructorUsedError;
   String? get chatGptChatId => throw _privateConstructorUsedError;
   String get emailId => throw _privateConstructorUsedError;
+  bool get canSendMessage => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ChatgptStateCopyWith<ChatgptState> get copyWith =>
@@ -38,7 +39,8 @@ abstract class $ChatgptStateCopyWith<$Res> {
       {List<ChatGPTDrawerResponse> chatgptDrawerData,
       List<ChatGPTChatModel> chatGPTChatModelList,
       String? chatGptChatId,
-      String emailId});
+      String emailId,
+      bool canSendMessage});
 }
 
 /// @nodoc
@@ -58,6 +60,7 @@ class _$ChatgptStateCopyWithImpl<$Res, $Val extends ChatgptState>
     Object? chatGPTChatModelList = null,
     Object? chatGptChatId = freezed,
     Object? emailId = null,
+    Object? canSendMessage = null,
   }) {
     return _then(_value.copyWith(
       chatgptDrawerData: null == chatgptDrawerData
@@ -76,6 +79,10 @@ class _$ChatgptStateCopyWithImpl<$Res, $Val extends ChatgptState>
           ? _value.emailId
           : emailId // ignore: cast_nullable_to_non_nullable
               as String,
+      canSendMessage: null == canSendMessage
+          ? _value.canSendMessage
+          : canSendMessage // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -92,7 +99,8 @@ abstract class _$$ChatgptStateImplCopyWith<$Res>
       {List<ChatGPTDrawerResponse> chatgptDrawerData,
       List<ChatGPTChatModel> chatGPTChatModelList,
       String? chatGptChatId,
-      String emailId});
+      String emailId,
+      bool canSendMessage});
 }
 
 /// @nodoc
@@ -110,6 +118,7 @@ class __$$ChatgptStateImplCopyWithImpl<$Res>
     Object? chatGPTChatModelList = null,
     Object? chatGptChatId = freezed,
     Object? emailId = null,
+    Object? canSendMessage = null,
   }) {
     return _then(_$ChatgptStateImpl(
       chatgptDrawerData: null == chatgptDrawerData
@@ -128,6 +137,10 @@ class __$$ChatgptStateImplCopyWithImpl<$Res>
           ? _value.emailId
           : emailId // ignore: cast_nullable_to_non_nullable
               as String,
+      canSendMessage: null == canSendMessage
+          ? _value.canSendMessage
+          : canSendMessage // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -139,7 +152,8 @@ class _$ChatgptStateImpl implements _ChatgptState {
       {final List<ChatGPTDrawerResponse> chatgptDrawerData = const [],
       final List<ChatGPTChatModel> chatGPTChatModelList = const [],
       this.chatGptChatId,
-      this.emailId = ""})
+      this.emailId = "",
+      this.canSendMessage = true})
       : _chatgptDrawerData = chatgptDrawerData,
         _chatGPTChatModelList = chatGPTChatModelList;
 
@@ -168,10 +182,13 @@ class _$ChatgptStateImpl implements _ChatgptState {
   @override
   @JsonKey()
   final String emailId;
+  @override
+  @JsonKey()
+  final bool canSendMessage;
 
   @override
   String toString() {
-    return 'ChatgptState(chatgptDrawerData: $chatgptDrawerData, chatGPTChatModelList: $chatGPTChatModelList, chatGptChatId: $chatGptChatId, emailId: $emailId)';
+    return 'ChatgptState(chatgptDrawerData: $chatgptDrawerData, chatGPTChatModelList: $chatGPTChatModelList, chatGptChatId: $chatGptChatId, emailId: $emailId, canSendMessage: $canSendMessage)';
   }
 
   @override
@@ -185,7 +202,9 @@ class _$ChatgptStateImpl implements _ChatgptState {
                 .equals(other._chatGPTChatModelList, _chatGPTChatModelList) &&
             (identical(other.chatGptChatId, chatGptChatId) ||
                 other.chatGptChatId == chatGptChatId) &&
-            (identical(other.emailId, emailId) || other.emailId == emailId));
+            (identical(other.emailId, emailId) || other.emailId == emailId) &&
+            (identical(other.canSendMessage, canSendMessage) ||
+                other.canSendMessage == canSendMessage));
   }
 
   @override
@@ -194,7 +213,8 @@ class _$ChatgptStateImpl implements _ChatgptState {
       const DeepCollectionEquality().hash(_chatgptDrawerData),
       const DeepCollectionEquality().hash(_chatGPTChatModelList),
       chatGptChatId,
-      emailId);
+      emailId,
+      canSendMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -208,7 +228,8 @@ abstract class _ChatgptState implements ChatgptState {
       {final List<ChatGPTDrawerResponse> chatgptDrawerData,
       final List<ChatGPTChatModel> chatGPTChatModelList,
       final String? chatGptChatId,
-      final String emailId}) = _$ChatgptStateImpl;
+      final String emailId,
+      final bool canSendMessage}) = _$ChatgptStateImpl;
 
   @override
   List<ChatGPTDrawerResponse> get chatgptDrawerData;
@@ -218,6 +239,8 @@ abstract class _ChatgptState implements ChatgptState {
   String? get chatGptChatId;
   @override
   String get emailId;
+  @override
+  bool get canSendMessage;
   @override
   @JsonKey(ignore: true)
   _$$ChatgptStateImplCopyWith<_$ChatgptStateImpl> get copyWith =>

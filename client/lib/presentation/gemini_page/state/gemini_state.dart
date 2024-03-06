@@ -10,5 +10,6 @@ class GeminiState with _$GeminiState {
       {@Default([]) List<GeminiDrawerResponse> geminiDrawerData,
       @Default([]) List<GeminiChatModel> geminiChatModelList,
       String? geminiChatId,
-      @Default("") String emailId}) = _GeminiState;
+      @Default("") String emailId,
+      @Default(true) bool canSendMessage}) = _GeminiState;
 }

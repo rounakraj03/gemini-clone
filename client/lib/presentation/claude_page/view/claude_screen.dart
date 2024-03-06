@@ -194,6 +194,7 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                               const SizedBox(height: 10),
                         )),
                         CustomTextField(
+                            canSendMessage: state.canSendMessage,
                             textController: textEditingController,
                             onTap: () => setState(() {
                                   final claudeData = ClaudeChatModel(
@@ -292,6 +293,7 @@ class ClaudeDrawerWidget extends StatelessWidget {
                         leading: const Icon(Icons.add_circle_outline),
                         title: const Text("New Chat"),
                         onTap: () {
+                          claudeBloc.updateCanSendValue(true);
                           claudeBloc.updateClaudechatIdValue(null);
                           claudeBloc.updateBookHeadingValue(null);
                           claudeBloc.setDefaultClaudeChatModelList();

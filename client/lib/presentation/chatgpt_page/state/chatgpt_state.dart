@@ -10,5 +10,6 @@ class ChatgptState with _$ChatgptState {
       {@Default([]) List<ChatGPTDrawerResponse> chatgptDrawerData,
       @Default([]) List<ChatGPTChatModel> chatGPTChatModelList,
       String? chatGptChatId,
-      @Default("") String emailId}) = _ChatgptState;
+      @Default("") String emailId,
+      @Default(true) bool canSendMessage}) = _ChatgptState;
 }

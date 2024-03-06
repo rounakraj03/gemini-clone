@@ -22,6 +22,7 @@ mixin _$GeminiState {
       throw _privateConstructorUsedError;
   String? get geminiChatId => throw _privateConstructorUsedError;
   String get emailId => throw _privateConstructorUsedError;
+  bool get canSendMessage => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GeminiStateCopyWith<GeminiState> get copyWith =>
@@ -38,7 +39,8 @@ abstract class $GeminiStateCopyWith<$Res> {
       {List<GeminiDrawerResponse> geminiDrawerData,
       List<GeminiChatModel> geminiChatModelList,
       String? geminiChatId,
-      String emailId});
+      String emailId,
+      bool canSendMessage});
 }
 
 /// @nodoc
@@ -58,6 +60,7 @@ class _$GeminiStateCopyWithImpl<$Res, $Val extends GeminiState>
     Object? geminiChatModelList = null,
     Object? geminiChatId = freezed,
     Object? emailId = null,
+    Object? canSendMessage = null,
   }) {
     return _then(_value.copyWith(
       geminiDrawerData: null == geminiDrawerData
@@ -76,6 +79,10 @@ class _$GeminiStateCopyWithImpl<$Res, $Val extends GeminiState>
           ? _value.emailId
           : emailId // ignore: cast_nullable_to_non_nullable
               as String,
+      canSendMessage: null == canSendMessage
+          ? _value.canSendMessage
+          : canSendMessage // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -92,7 +99,8 @@ abstract class _$$GeminiStateImplCopyWith<$Res>
       {List<GeminiDrawerResponse> geminiDrawerData,
       List<GeminiChatModel> geminiChatModelList,
       String? geminiChatId,
-      String emailId});
+      String emailId,
+      bool canSendMessage});
 }
 
 /// @nodoc
@@ -110,6 +118,7 @@ class __$$GeminiStateImplCopyWithImpl<$Res>
     Object? geminiChatModelList = null,
     Object? geminiChatId = freezed,
     Object? emailId = null,
+    Object? canSendMessage = null,
   }) {
     return _then(_$GeminiStateImpl(
       geminiDrawerData: null == geminiDrawerData
@@ -128,6 +137,10 @@ class __$$GeminiStateImplCopyWithImpl<$Res>
           ? _value.emailId
           : emailId // ignore: cast_nullable_to_non_nullable
               as String,
+      canSendMessage: null == canSendMessage
+          ? _value.canSendMessage
+          : canSendMessage // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -139,7 +152,8 @@ class _$GeminiStateImpl implements _GeminiState {
       {final List<GeminiDrawerResponse> geminiDrawerData = const [],
       final List<GeminiChatModel> geminiChatModelList = const [],
       this.geminiChatId,
-      this.emailId = ""})
+      this.emailId = "",
+      this.canSendMessage = true})
       : _geminiDrawerData = geminiDrawerData,
         _geminiChatModelList = geminiChatModelList;
 
@@ -168,10 +182,13 @@ class _$GeminiStateImpl implements _GeminiState {
   @override
   @JsonKey()
   final String emailId;
+  @override
+  @JsonKey()
+  final bool canSendMessage;
 
   @override
   String toString() {
-    return 'GeminiState(geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, geminiChatId: $geminiChatId, emailId: $emailId)';
+    return 'GeminiState(geminiDrawerData: $geminiDrawerData, geminiChatModelList: $geminiChatModelList, geminiChatId: $geminiChatId, emailId: $emailId, canSendMessage: $canSendMessage)';
   }
 
   @override
@@ -185,7 +202,9 @@ class _$GeminiStateImpl implements _GeminiState {
                 .equals(other._geminiChatModelList, _geminiChatModelList) &&
             (identical(other.geminiChatId, geminiChatId) ||
                 other.geminiChatId == geminiChatId) &&
-            (identical(other.emailId, emailId) || other.emailId == emailId));
+            (identical(other.emailId, emailId) || other.emailId == emailId) &&
+            (identical(other.canSendMessage, canSendMessage) ||
+                other.canSendMessage == canSendMessage));
   }
 
   @override
@@ -194,7 +213,8 @@ class _$GeminiStateImpl implements _GeminiState {
       const DeepCollectionEquality().hash(_geminiDrawerData),
       const DeepCollectionEquality().hash(_geminiChatModelList),
       geminiChatId,
-      emailId);
+      emailId,
+      canSendMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -208,7 +228,8 @@ abstract class _GeminiState implements GeminiState {
       {final List<GeminiDrawerResponse> geminiDrawerData,
       final List<GeminiChatModel> geminiChatModelList,
       final String? geminiChatId,
-      final String emailId}) = _$GeminiStateImpl;
+      final String emailId,
+      final bool canSendMessage}) = _$GeminiStateImpl;
 
   @override
   List<GeminiDrawerResponse> get geminiDrawerData;
@@ -218,6 +239,8 @@ abstract class _GeminiState implements GeminiState {
   String? get geminiChatId;
   @override
   String get emailId;
+  @override
+  bool get canSendMessage;
   @override
   @JsonKey(ignore: true)
   _$$GeminiStateImplCopyWith<_$GeminiStateImpl> get copyWith =>

@@ -30,6 +30,10 @@ class GeminiBloc extends Cubit<GeminiState> {
     emit(state.copyWith(emailId: email));
   }
 
+  updateCanSendValue(bool value) {
+    emit(state.copyWith(canSendMessage: value));
+  }
+
   void scrollToBottom({bool stopScrolling = false}) {
     if (!stopScrolling) {
       scrollController.animateTo(
@@ -85,6 +89,7 @@ class GeminiBloc extends Cubit<GeminiState> {
                 old_message: messages.sublist(0, messages.length - 1)))
             .listen((event) {
           print("e=> ${event.data}");
+          updateCanSendValue(false);
           emit(state.copyWith(geminiChatId: event.chatId));
           if (state.geminiChatModelList.last.role == "user") {
             List<GeminiChatModel> tempList = List.of(state.geminiChatModelList);
@@ -101,6 +106,9 @@ class GeminiBloc extends Cubit<GeminiState> {
             updateGeminiModelList(tempList2);
             scrollToBottom();
           }
+        }, onDone: () {
+          scrollToBottom();
+          updateCanSendValue(true);
         });
       }
     } catch (e) {

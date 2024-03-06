@@ -11,5 +11,6 @@ class ClaudeState with _$ClaudeState {
       @Default([]) List<ClaudeDrawerResponse> claudeDrawerData,
       @Default("") String emailId,
       String? claudeChatId,
-      String? bookHeading}) = _ClaudeState;
+      String? bookHeading,
+      @Default(true) bool canSendMessage}) = _ClaudeState;
 }

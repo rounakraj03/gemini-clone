@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatefulWidget {
   final textController;
   VoidCallback? onTap;
-  CustomTextField({required this.textController, this.onTap, super.key});
+  bool canSendMessage;
+  CustomTextField(
+      {required this.textController,
+      this.onTap,
+      required this.canSendMessage,
+      super.key});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldRowState();
@@ -34,7 +39,8 @@ class _CustomTextFieldRowState extends State<CustomTextField> {
         ),
         IconButton(
             onPressed: () {
-              if (widget.textController.text.isNotEmpty) {
+              if (widget.textController.text.isNotEmpty &&
+                  widget.canSendMessage) {
                 setState(() {
                   if (widget.onTap != null) {
                     widget.onTap!();
@@ -48,9 +54,11 @@ class _CustomTextFieldRowState extends State<CustomTextField> {
                   borderRadius: BorderRadius.circular(30)),
               height: 50,
               width: 50,
-              child: const Icon(
+              child: Icon(
                 Icons.send,
-                color: AppColors.desertStorm,
+                color: (widget.canSendMessage)
+                    ? AppColors.desertStorm
+                    : Colors.grey,
               ),
             )),
       ],

@@ -53,6 +53,7 @@ class _ChatgptScreenState extends State<ChatgptScreen> {
                       itemCount: state.chatGPTChatModelList.length,
                     )),
                     CustomTextField(
+                      canSendMessage: state.canSendMessage,
                       textController: textEditingController,
                       onTap: () {
                         if (textEditingController.text.isNotEmpty) {
@@ -149,6 +150,7 @@ class ChatgptDrawerWidget extends StatelessWidget {
                         leading: const Icon(Icons.add_circle_outline),
                         title: const Text("New Chat"),
                         onTap: () {
+                          chatgptBloc.updateCanSendValue(true);
                           chatgptBloc.updateChatGPTchatIdValue(null);
                           chatgptBloc.setDefaultChatGptModelList();
                           RouteData.pop();

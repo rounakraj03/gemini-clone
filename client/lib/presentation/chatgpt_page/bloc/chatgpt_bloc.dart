@@ -40,6 +40,10 @@ class ChatgptBloc extends Cubit<ChatgptState> {
     }
   }
 
+  updateCanSendValue(bool value) {
+    emit(state.copyWith(canSendMessage: value));
+  }
+
   void setDefaultChatGptModelList() {
     List<ChatGPTChatModel> defaultChatGPTChatModelList = [
       ChatGPTChatModel(role: 'user', content: "Hi"),
@@ -85,6 +89,7 @@ class ChatgptBloc extends Cubit<ChatgptState> {
                 new_message: "hi",
                 old_message: messages))
             .listen((event) {
+          updateCanSendValue(false);
           print("e=> ${event.data}");
           emit(state.copyWith(chatGptChatId: event.chatId));
           if (state.chatGPTChatModelList.last.role == "user") {
@@ -107,6 +112,9 @@ class ChatgptBloc extends Cubit<ChatgptState> {
             updateChatGPTmodelList(tempList2);
             scrollToBottom();
           }
+        }, onDone: () {
+          scrollToBottom();
+          updateCanSendValue(true);
         });
       }
     } catch (e) {
