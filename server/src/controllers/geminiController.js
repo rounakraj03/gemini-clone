@@ -171,7 +171,6 @@ const getGeminiHistory = async (req, res, next) => {
                 chatHistory: chat["chatHistory"],
             });
         }
-        throw new Error("Hi rounak how you doin!!");
     res.status(200).json(tempList);
 } catch (error) {
   res.status(406);

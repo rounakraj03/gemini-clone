@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:client/core/app_loader.dart';
 import 'package:client/core/secure_shared_preference.dart';
 import 'package:client/network/models/claude_model.dart';
@@ -11,6 +12,7 @@ import 'package:client/network/models/new_chat_response.dart';
 import 'package:client/network/network_response/network_error.dart';
 import 'package:client/network/repository/chat_repository.dart';
 import 'package:client/routes/routes.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -21,7 +23,15 @@ class ChatRepositoryImpl extends ChatRepository {
       connectTimeout: const Duration(minutes: 5), // Adjust as needed
       receiveTimeout: const Duration(minutes: 5), // Adjust as needed
     ),
-  );
+  )..interceptors.add(LogInterceptor(
+      logPrint: (object) => log(object.toString()),
+      requestBody: true,
+      requestHeader: true,
+      responseBody: true,
+      responseHeader: true,
+      error: true,
+      request: true));
+
   ApiErrorHandler apiErrorHandler = ApiErrorHandler();
   SecuredSharedPreference securedSharedPreference = SecuredSharedPreference();
   // final baseUrl = "http://192.168.2.192:5001/";
@@ -45,57 +55,62 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<List<GeminiDrawerResponse>> getGeminiDrawerData(
+  Future<Either<ErrorResponse, List<GeminiDrawerResponse>>> getGeminiDrawerData(
       DrawerRequest drawerRequest) async {
     try {
       final apiUrl = baseUrl + geminiChatHistory;
       final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
       List<GeminiDrawerResponse> result = [];
       response.data.forEach((e) => result.add(GeminiDrawerResponse.fromMap(e)));
-      return result;
+      return right(result);
     } catch (e) {
-      print("error : $e");
-      apiErrorHandler.handleError(e);
-      throw e;
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
   @override
-  Future<List<ChatGPTDrawerResponse>> getChatGptDrawerData(
-      DrawerRequest drawerRequest) async {
+  Future<Either<ErrorResponse, List<ChatGPTDrawerResponse>>>
+      getChatGptDrawerData(DrawerRequest drawerRequest) async {
     try {
       final apiUrl = baseUrl + chatGPTChatHistory;
       final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
       List<ChatGPTDrawerResponse> result = [];
       response.data
           .forEach((e) => result.add(ChatGPTDrawerResponse.fromMap(e)));
-
-      return result;
+      return right(result);
     } catch (e) {
-      print("error : $e");
-      apiErrorHandler.handleError(e);
-      throw e;
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
   @override
-  Future<List<ClaudeDrawerResponse>> getClaudeDrawerData(
+  Future<Either<ErrorResponse, List<ClaudeDrawerResponse>>> getClaudeDrawerData(
       DrawerRequest drawerRequest) async {
     try {
       final apiUrl = baseUrl + claudeChatHistory;
       final response = await _dio.post(apiUrl, data: drawerRequest.toJson());
       List<ClaudeDrawerResponse> result = [];
       response.data.forEach((e) => result.add(ClaudeDrawerResponse.fromMap(e)));
-      return result;
+      return right(result);
     } catch (e) {
-      print("error : $e");
-      apiErrorHandler.handleError(e);
-      throw e;
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
   @override
-  Stream<NewChatResponse> getGeminiChatResponse(
+  Stream<Either<ErrorResponse, NewChatResponse>> getGeminiChatResponse(
       GeminiNewChatRequest newChatRequest) async* {
     try {
       final apiUrl = baseUrl + geminiNewChatUrl;
@@ -113,16 +128,19 @@ class ChatRepositoryImpl extends ChatRepository {
       await for (final chunk in response.data.stream) {
         final jsonString = utf8.decode(chunk);
         final chatResponse = NewChatResponse.fromJson(jsonString);
-        yield chatResponse;
+        yield right(chatResponse);
       }
     } catch (e) {
-      apiErrorHandler.handleError(e);
-      print("error : $e");
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        yield left(error);
+      }
+      yield left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
   @override
-  Stream<NewChatResponse> getChatGPTChatResponse(
+  Stream<Either<ErrorResponse, NewChatResponse>> getChatGPTChatResponse(
       ChatGPTNewChatRequest newChatRequest) async* {
     try {
       final apiUrl = baseUrl + chatGPTNewChatUrl;
@@ -142,32 +160,37 @@ class ChatRepositoryImpl extends ChatRepository {
         // final chatResponse =
         //     ChatGPTNewChatResponse.fromJson(json.decode(jsonString));
         final chatResponse = NewChatResponse.fromJson(jsonString);
-        yield chatResponse;
+        yield right(chatResponse);
       }
     } catch (e) {
-      apiErrorHandler.handleError(e);
-      print("error : $e");
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        yield left(error);
+      }
+      yield left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
   @override
-  Future<LoginSignUpResponse> login(
+  Future<Either<ErrorResponse, LoginSignUpResponse>> login(
       {required String email, required String password}) async {
     try {
       final apiUrl = baseUrl + loginUrl;
       final response = await _dio.post(apiUrl,
           data: LoginSignUpRequest(email: email, password: password).toJson());
       final result = LoginSignUpResponse.fromMap(response.data);
-      return result;
+      return right(result);
     } catch (e) {
-      print("error: $e");
-      apiErrorHandler.handleError(e);
-      throw e;
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
   @override
-  Future<LoginSignUpResponse> signup(
+  Future<Either<ErrorResponse, LoginSignUpResponse>> signup(
       {required String email, required String password}) async {
     try {
       final apiUrl = baseUrl + signupUrl;
@@ -178,11 +201,13 @@ class ChatRepositoryImpl extends ChatRepository {
         throw response.data["errorMessage"];
       }
       final result = LoginSignUpResponse.fromMap(response.data);
-      return result;
+      return right(result);
     } catch (e) {
-      print("error: $e");
-      apiErrorHandler.handleError(e);
-      throw e;
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
     }
   }
 
@@ -216,36 +241,53 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<ClaudeNextChatResponse> getClaudeResponseWithFileUpload(
-      FormData formData) async {
-    final headers = <String, String>{
-      'Content-Type': 'multipart/form-data',
-    };
-    final apiUrl = baseUrl + claudeNewChatUrl;
-    final response = await _dio.post(
-      apiUrl,
-      data: formData,
-      onSendProgress: (sent, total) {
-        final progress = (sent / total);
-        print('Upload progress: $progress%');
-        AppLoader.showUploadStatus(value: progress, status: "Uploading");
-      },
-      options: Options(headers: headers),
-    );
-    final result = ClaudeNextChatResponse.fromMap(response.data);
-    return result;
+  Future<Either<ErrorResponse, ClaudeNextChatResponse>>
+      getClaudeResponseWithFileUpload(FormData formData) async {
+    try {
+      final headers = <String, String>{
+        'Content-Type': 'multipart/form-data',
+      };
+      final apiUrl = baseUrl + claudeNewChatUrl;
+      final response = await _dio.post(
+        apiUrl,
+        data: formData,
+        onSendProgress: (sent, total) {
+          final progress = (sent / total);
+          print('Upload progress: $progress%');
+          AppLoader.showUploadStatus(value: progress, status: "Uploading");
+        },
+        options: Options(headers: headers),
+      );
+      final result = ClaudeNextChatResponse.fromMap(response.data);
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
+    }
   }
 
   @override
-  Future<ClaudeNextChatResponse> getClaudeNextChatsResponse(
-      ClaudeNextChatsRequest claudeNextChatsRequest) async {
-    final apiUrl = baseUrl + claudeNextChatUrl;
-    final response = await _dio.post(
-      apiUrl,
-      data: claudeNextChatsRequest.toJson(),
-    );
-    final result = ClaudeNextChatResponse.fromMap(response.data);
-    return result;
+  Future<Either<ErrorResponse, ClaudeNextChatResponse>>
+      getClaudeNextChatsResponse(
+          ClaudeNextChatsRequest claudeNextChatsRequest) async {
+    try {
+      final apiUrl = baseUrl + claudeNextChatUrl;
+      final response = await _dio.post(
+        apiUrl,
+        data: claudeNextChatsRequest.toJson(),
+      );
+      final result = ClaudeNextChatResponse.fromMap(response.data);
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        final error = ErrorResponse.fromMap(e.response?.data);
+        return left(error);
+      }
+      return left(ErrorResponse.fromJson(e.toString()));
+    }
   }
 
   @override

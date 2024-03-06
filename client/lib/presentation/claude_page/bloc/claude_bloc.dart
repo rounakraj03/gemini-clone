@@ -71,11 +71,15 @@ class ClaudeBloc extends Cubit<ClaudeState> {
       } else {
         final claudeDrawerResult = await chatRepository
             .getClaudeDrawerData(DrawerRequest(userId: userId));
-
-        emit(state.copyWith(claudeDrawerData: claudeDrawerResult));
+        claudeDrawerResult.fold(
+          (l) => AppLoader.showError(l.errorMessage),
+          (r) {
+            emit(state.copyWith(claudeDrawerData: r));
+          },
+        );
       }
     } catch (e) {
-      print("error: $e");
+      AppLoader.showError(e.toString());
     }
   }
 
@@ -96,11 +100,13 @@ class ClaudeBloc extends Cubit<ClaudeState> {
       updateCanSendValue(false);
       final response =
           await chatRepository.getClaudeResponseWithFileUpload(formData);
-      updateCanSendValue(true);
-      AppLoader.dismissLoader();
-      updateClaudeModelList(response.chatHistory);
-      updateClaudechatIdValue(response.chatId);
-      scrollToBottom();
+      response.fold((l) => AppLoader.showError(l.errorMessage), (r) {
+        updateCanSendValue(true);
+        AppLoader.dismissLoader();
+        updateClaudeModelList(r.chatHistory);
+        updateClaudechatIdValue(r.chatId);
+        scrollToBottom();
+      });
     }
   }
 
@@ -116,11 +122,17 @@ class ClaudeBloc extends Cubit<ClaudeState> {
           ClaudeNextChatsRequest(
               chatId: chatId, question: question, userId: userId));
       AppLoader.dismissLoader();
-      updateCanSendValue(true);
-      updateClaudeModelList(response.chatHistory);
-      updateClaudechatIdValue(response.chatId);
-      updateBookHeadingValue(response.heading);
-      scrollToBottom();
+
+      response.fold(
+        (l) => AppLoader.showError(l.errorMessage),
+        (r) {
+          updateCanSendValue(true);
+          updateClaudeModelList(r.chatHistory);
+          updateClaudechatIdValue(r.chatId);
+          updateBookHeadingValue(r.heading);
+          scrollToBottom();
+        },
+      );
     }
   }
 }

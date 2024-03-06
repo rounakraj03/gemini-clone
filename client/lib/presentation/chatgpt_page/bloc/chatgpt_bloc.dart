@@ -1,3 +1,4 @@
+import 'package:client/core/app_loader.dart';
 import 'package:client/network/models/chat_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
@@ -65,7 +66,10 @@ class ChatgptBloc extends Cubit<ChatgptState> {
       } else {
         final chatGptDrawerResult = await chatRepository
             .getChatGptDrawerData(DrawerRequest(userId: userId));
-        emit(state.copyWith(chatgptDrawerData: chatGptDrawerResult));
+        chatGptDrawerResult.fold((l) => AppLoader.showError(l.errorMessage),
+            (r) {
+          emit(state.copyWith(chatgptDrawerData: r));
+        });
       }
     } catch (e) {
       print("error: $e");
@@ -90,28 +94,33 @@ class ChatgptBloc extends Cubit<ChatgptState> {
                 old_message: messages))
             .listen((event) {
           updateCanSendValue(false);
-          print("e=> ${event.data}");
-          emit(state.copyWith(chatGptChatId: event.chatId));
-          if (state.chatGPTChatModelList.last.role == "user") {
-            List<ChatGPTChatModel> tempList =
-                List.of(state.chatGPTChatModelList);
-            tempList
-                .add(ChatGPTChatModel(role: "assistant", content: event.data));
-            updateChatGPTmodelList(tempList);
-            scrollToBottom();
-          } else {
-            //
-            List<ChatGPTChatModel> tempList =
-                List.of(state.chatGPTChatModelList);
-            String tempLastParts = tempList.last.content;
-            tempLastParts = tempLastParts + event.data;
-            List<ChatGPTChatModel> tempList2 =
-                tempList.sublist(0, tempList.length - 1);
-            tempList2.add(
-                ChatGPTChatModel(role: "assistant", content: tempLastParts));
-            updateChatGPTmodelList(tempList2);
-            scrollToBottom();
-          }
+          print("e=> ${event.fold((l) => l.errorMessage, (r) => r)}");
+          event.fold(
+            (l) => AppLoader.showError(l.errorMessage),
+            (r) {
+              emit(state.copyWith(chatGptChatId: r.chatId));
+              if (state.chatGPTChatModelList.last.role == "user") {
+                List<ChatGPTChatModel> tempList =
+                    List.of(state.chatGPTChatModelList);
+                tempList
+                    .add(ChatGPTChatModel(role: "assistant", content: r.data));
+                updateChatGPTmodelList(tempList);
+                scrollToBottom();
+              } else {
+                //
+                List<ChatGPTChatModel> tempList =
+                    List.of(state.chatGPTChatModelList);
+                String tempLastParts = tempList.last.content;
+                tempLastParts = tempLastParts + r.data;
+                List<ChatGPTChatModel> tempList2 =
+                    tempList.sublist(0, tempList.length - 1);
+                tempList2.add(ChatGPTChatModel(
+                    role: "assistant", content: tempLastParts));
+                updateChatGPTmodelList(tempList2);
+                scrollToBottom();
+              }
+            },
+          );
         }, onDone: () {
           scrollToBottom();
           updateCanSendValue(true);

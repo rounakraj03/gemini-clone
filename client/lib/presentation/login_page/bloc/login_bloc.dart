@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:client/core/app_loader.dart';
+import 'package:client/core/snack_bar.dart';
 import 'package:client/network/repository/chat_repository.dart';
 import 'package:client/presentation/login_page/state/login_state.dart';
 import 'package:injectable/injectable.dart';
@@ -16,21 +18,27 @@ class LoginBloc extends Cubit<LoginState> {
     if (isSignUp) {
       final loginInfo =
           await chatRepository.signup(email: email, password: password);
-      if (loginInfo.id != "") {
-        chatRepository.saveUserId(loginInfo.id);
-        chatRepository.saveEmail(email);
-        chatRepository.saveUserLogin(true);
-        onSuccess(loginInfo.id);
-      }
+      loginInfo.fold(
+          (l) => scaffoldMessenger.showSnackBar(text: l.errorMessage), (r) {
+        if (r.id != "") {
+          chatRepository.saveUserId(r.id);
+          chatRepository.saveEmail(email);
+          chatRepository.saveUserLogin(true);
+          onSuccess(r.id);
+        }
+      });
     } else {
       final signUpInfo =
           await chatRepository.login(email: email, password: password);
-      if (signUpInfo.id != "") {
-        chatRepository.saveUserId(signUpInfo.id);
-        chatRepository.saveEmail(email);
-        chatRepository.saveUserLogin(true);
-        onSuccess(signUpInfo.id);
-      }
+      signUpInfo.fold(
+          (l) => scaffoldMessenger.showSnackBar(text: l.errorMessage), (r) {
+        if (r.id != "") {
+          chatRepository.saveUserId(r.id);
+          chatRepository.saveEmail(email);
+          chatRepository.saveUserLogin(true);
+          onSuccess(r.id);
+        }
+      });
     }
   }
 

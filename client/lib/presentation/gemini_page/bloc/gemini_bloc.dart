@@ -1,3 +1,4 @@
+import 'package:client/core/app_loader.dart';
 import 'package:client/network/models/chat_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
 import 'package:client/network/models/new_chat_request.dart';
@@ -68,10 +69,11 @@ class GeminiBloc extends Cubit<GeminiState> {
       } else {
         final geminiDrawerResult = await chatRepository
             .getGeminiDrawerData(DrawerRequest(userId: userId));
-        emit(state.copyWith(geminiDrawerData: geminiDrawerResult));
+        geminiDrawerResult.fold((l) => AppLoader.showError(l.errorMessage),
+            (r) => emit(state.copyWith(geminiDrawerData: r)));
       }
     } catch (e) {
-      print("error: $e");
+      AppLoader.showError(e.toString());
     }
   }
 
@@ -88,24 +90,30 @@ class GeminiBloc extends Cubit<GeminiState> {
                 new_message: messages.last.parts,
                 old_message: messages.sublist(0, messages.length - 1)))
             .listen((event) {
-          print("e=> ${event.data}");
-          updateCanSendValue(false);
-          emit(state.copyWith(geminiChatId: event.chatId));
-          if (state.geminiChatModelList.last.role == "user") {
-            List<GeminiChatModel> tempList = List.of(state.geminiChatModelList);
-            tempList.add(GeminiChatModel(role: "model", parts: event.data));
-            updateGeminiModelList(tempList);
-            scrollToBottom();
-          } else {
-            List<GeminiChatModel> tempList = List.of(state.geminiChatModelList);
-            String tempLastParts = tempList.last.parts;
-            tempLastParts = tempLastParts + event.data;
-            List<GeminiChatModel> tempList2 =
-                tempList.sublist(0, tempList.length - 1);
-            tempList2.add(GeminiChatModel(role: "model", parts: tempLastParts));
-            updateGeminiModelList(tempList2);
-            scrollToBottom();
-          }
+          print(
+              "e=> ${event.fold((l) => AppLoader.showError(l.errorMessage), (r) => r)}");
+          event.fold((l) => AppLoader.showError(l.errorMessage), (r) {
+            updateCanSendValue(false);
+            emit(state.copyWith(geminiChatId: r.chatId));
+            if (state.geminiChatModelList.last.role == "user") {
+              List<GeminiChatModel> tempList =
+                  List.of(state.geminiChatModelList);
+              tempList.add(GeminiChatModel(role: "model", parts: r.data));
+              updateGeminiModelList(tempList);
+              scrollToBottom();
+            } else {
+              List<GeminiChatModel> tempList =
+                  List.of(state.geminiChatModelList);
+              String tempLastParts = tempList.last.parts;
+              tempLastParts = tempLastParts + r.data;
+              List<GeminiChatModel> tempList2 =
+                  tempList.sublist(0, tempList.length - 1);
+              tempList2
+                  .add(GeminiChatModel(role: "model", parts: tempLastParts));
+              updateGeminiModelList(tempList2);
+              scrollToBottom();
+            }
+          });
         }, onDone: () {
           scrollToBottom();
           updateCanSendValue(true);
