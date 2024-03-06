@@ -57,7 +57,7 @@ class ChatgptBloc extends Cubit<ChatgptState> {
     try {
       String userId = await chatRepository.getUserId();
       if (userId == "") {
-        //TODO LOGOUT
+        logOut();
       } else {
         final chatGptDrawerResult = await chatRepository
             .getChatGptDrawerData(DrawerRequest(userId: userId));
@@ -76,7 +76,7 @@ class ChatgptBloc extends Cubit<ChatgptState> {
     try {
       String userId = await chatRepository.getUserId();
       if (userId == "") {
-        //TODO LOGOUT
+        logOut();
       } else {
         var result = await chatRepository
             .getChatGPTChatResponse(ChatGPTNewChatRequest(

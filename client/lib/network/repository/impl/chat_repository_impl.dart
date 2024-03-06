@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:client/core/app_loader.dart';
 import 'package:client/core/secure_shared_preference.dart';
 import 'package:client/network/models/claude_model.dart';
 import 'package:client/network/models/drawer_request_response.dart';
@@ -225,8 +226,13 @@ class ChatRepositoryImpl extends ChatRepository {
       apiUrl,
       data: formData,
       onSendProgress: (sent, total) {
-        final progress = (sent / total) * 100;
+        final progress = (sent / total);
         print('Upload progress: $progress%');
+        if (progress >= 1.0) {
+          AppLoader.dismissLoader();
+        } else {
+          AppLoader.showUploadStatus(value: progress, status: "Uploading");
+        }
       },
       options: Options(headers: headers),
     );

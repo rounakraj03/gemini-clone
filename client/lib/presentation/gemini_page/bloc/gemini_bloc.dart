@@ -60,7 +60,7 @@ class GeminiBloc extends Cubit<GeminiState> {
     try {
       String userId = await chatRepository.getUserId();
       if (userId == "") {
-        //TODO LOGOUT
+        logOut();
       } else {
         final geminiDrawerResult = await chatRepository
             .getGeminiDrawerData(DrawerRequest(userId: userId));
@@ -75,7 +75,7 @@ class GeminiBloc extends Cubit<GeminiState> {
     try {
       String userId = await chatRepository.getUserId();
       if (userId == "") {
-        //TODO LOGOUT
+        logOut();
       } else {
         var result = await chatRepository
             .getGeminiChatResponse(GeminiNewChatRequest(

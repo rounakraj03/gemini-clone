@@ -1,3 +1,4 @@
+import 'package:client/core/app_loader.dart';
 import 'package:client/di/di.dart';
 import 'package:client/presentation/chatgpt_page/view/chatgpt_screen.dart';
 import 'package:client/presentation/login_page/view/login_screen.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         initialRoute: NavigationHandler.initialRoute,
         onGenerateRoute: NavigationHandler.onGenerate,
         navigatorKey: NavigationHandler.navigatorKey,
+        builder: AppLoader.initBuilder(),
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,

@@ -5,6 +5,7 @@ class Assets {
   static const String claudeLogo2 = "assets/icons/claude_logo.png";
   static const String chatGPTLogo = "assets/icons/chatgpt.jpg";
   static const String chatGPTLogo2 = "assets/icons/chatgpt-2.png";
+  static const String error = "assets/icons/error.png";
 }
 
 class StaticVariables {

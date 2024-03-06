@@ -62,7 +62,7 @@ class ClaudeBloc extends Cubit<ClaudeState> {
     try {
       String userId = await chatRepository.getUserId();
       if (userId == "") {
-        //TODO LOGOUT
+        logOut();
       } else {
         final claudeDrawerResult = await chatRepository
             .getClaudeDrawerData(DrawerRequest(userId: userId));
@@ -80,6 +80,7 @@ class ClaudeBloc extends Cubit<ClaudeState> {
       required String question}) async {
     String userId = await chatRepository.getUserId();
     if (userId == "") {
+      logOut();
     } else {
       final formData = FormData.fromMap({
         'pdf': await MultipartFile.fromFile(filePath, filename: fileName),
@@ -97,6 +98,7 @@ class ClaudeBloc extends Cubit<ClaudeState> {
       {required String chatId, required String question}) async {
     String userId = await chatRepository.getUserId();
     if (userId == "") {
+      logOut();
     } else {
       final response = await chatRepository.getClaudeNextChatsResponse(
           ClaudeNextChatsRequest(
