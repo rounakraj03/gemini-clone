@@ -90,68 +90,74 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                               if (state.claudeChatModelList.isNotEmpty) {
                                 return const SizedBox();
                               }
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                child: Text(
-                                  "Upload Pdf",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Upload Pdf",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      child: InkWell(
+                                        onTapDown: (details) {
+                                          filePickerMethod();
+                                        },
+                                        child: DottedBorder(
+                                          child: Container(
+                                            padding: const EdgeInsets.all(20),
+                                            child: const Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                      Icons.add_circle_outline),
+                                                  SizedBox(
+                                                    height: 8,
+                                                  ),
+                                                  Text(
+                                                    "Click to choose file",
+                                                    style:
+                                                        TextStyle(fontSize: 12),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(Icons.info_outline,
+                                                          size: 18),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                        "Max file size: 10 MB",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 12),
+                                                      )
+                                                    ],
+                                                  )
+                                                ]),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               );
                             } else if (index == 1) {
-                              if (state.claudeChatModelList.isNotEmpty) {
-                                return const SizedBox();
-                              }
-                              return Container(
-                                margin:
-                                    const EdgeInsets.all(20).copyWith(top: 10),
-                                child: InkWell(
-                                  onTapDown: (details) {
-                                    filePickerMethod();
-                                  },
-                                  child: DottedBorder(
-                                    child: Container(
-                                      padding: const EdgeInsets.all(20),
-                                      child: const Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.add_circle_outline),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            Text(
-                                              "Click to choose file",
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.info_outline,
-                                                    size: 18),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Text(
-                                                  "Max file size: 10 MB",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12),
-                                                )
-                                              ],
-                                            )
-                                          ]),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            } else if (index == 2) {
                               if (state.bookHeading == "" ||
                                   state.bookHeading == null) {
                                 return const SizedBox();
@@ -181,11 +187,11 @@ class _ClaudeScreenState extends State<ClaudeScreen> {
                             }
                             return ClaudeChatBubble(
                                 chatModel:
-                                    state.claudeChatModelList[index - 3]);
+                                    state.claudeChatModelList[index - 2]);
                           },
-                          itemCount: state.claudeChatModelList.length + 3,
+                          itemCount: state.claudeChatModelList.length + 2,
                           separatorBuilder: (context, index) =>
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                         )),
                         CustomTextField(
                             textController: textEditingController,
