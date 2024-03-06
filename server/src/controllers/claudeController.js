@@ -195,6 +195,7 @@ const getTextClaude = async (prompt) => {
 
 
 const nextChats = async (req, res, next) => {
+    try{
     const {userId, chatId, question} = req.body;
 
     if(!userId || !chatId || !question) {
@@ -229,6 +230,10 @@ const nextChats = async (req, res, next) => {
         chatHistory: data["chatHistory"],
         heading: data["heading"]
      });
+    } catch(e) {
+        console.log("error", e);
+        next(e);
+    }
 }
 
 //@desc Use to do signup
