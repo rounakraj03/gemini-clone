@@ -18,8 +18,11 @@ class SecuredSharedPreference {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String data = prefs.getString(key) ?? "";
-      final decrypted = encrypter.decrypt16(data, iv: iv);
-      return decrypted;
+      if (data != "") {
+        final decrypted = encrypter.decrypt16(data, iv: iv);
+        return decrypted;
+      }
+      return "";
     } catch (e) {
       return "";
     }
